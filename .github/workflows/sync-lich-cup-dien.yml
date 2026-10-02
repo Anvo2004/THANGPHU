@@ -1,0 +1,75 @@
+name: Sync lich cat dien Thang Phu (thu cong)
+
+on:
+  workflow_dispatch:
+
+jobs:
+  sync:
+    if: vars.SYNC_ENABLED == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fetch EVN CPC outages and relay to Backend
+        env:
+          API_URL: ${{ vars.BACKEND_PUBLIC_URL }}
+          ORG_CODE: ${{ vars.EVNCPC_ORG_CODE }}
+          SUBORG_CODE: ${{ vars.EVNCPC_SUBORG_CODE }}
+          INGEST_SECRET: ${{ secrets.LICH_CUP_DIEN_INGEST_SECRET }}
+        run: |
+          set -e
+          test -n "$API_URL"
+          test -n "$ORG_CODE"
+          test -n "$SUBORG_CODE"
+          test -n "$INGEST_SECRET"
+          FROM=$(date -u +"%Y-%m-%d 00:00:00")
+          TO=$(date -u -d "+14 days" +"%Y-%m-%d 23:59:00")
+
+          # EVN CPC's API occasionally stalls/hangs from GitHub's runner IPs (or
+          # any external caller). curl has no default timeout, so a single slow
+          # request would otherwise hang for the entire job — cap it, and retry
+          # a couple of times before giving up on that page.
+          curl_retry() {
+            local attempt
+            for attempt in 1 2 3; do
+              if curl -sf --connect-timeout 10 --max-time 25 "$@"; then
+                return 0
+              fi
+              echo "curl attempt $attempt failed, retrying in 5s..." >&2
+              sleep 5
+            done
+            return 1
+          }
+
+          ITEMS="[]"
+          for page in $(seq 1 10); do
+            if ! RESP=$(curl_retry -H "version: 1.0" -H "Accept: application/json" \
+              --get "https://cskh-api.cpc.vn/api/remote/outages/area" \
+              --data-urlencode "orgCode=$ORG_CODE" \
+              --data-urlencode "subOrgCode=$SUBORG_CODE" \
+              --data-urlencode "fromDate=$FROM" \
+              --data-urlencode "toDate=$TO" \
+              --data-urlencode "page=$page" \
+              --data-urlencode "limit=100"); then
+              if [ "$page" -eq 1 ]; then
+                echo "EVN CPC khong phan hoi sau 3 lan thu o trang dau tien — that bai that su, dung job." >&2
+                exit 1
+              fi
+              echo "Bo qua trang $page sau 3 lan thu that bai, dung lai voi du lieu da co."
+              break
+            fi
+            BATCH=$(echo "$RESP" | jq -c '.items // []')
+            COUNT=$(echo "$BATCH" | jq 'length')
+            ITEMS=$(jq -c -n --argjson a "$ITEMS" --argjson b "$BATCH" '$a + $b')
+            echo "page $page: $COUNT items"
+            if [ "$COUNT" -lt 100 ]; then break; fi
+          done
+
+          TOTAL=$(echo "$ITEMS" | jq 'length')
+          echo "Fetched $TOTAL outage records total, relaying to Backend..."
+
+          PAYLOAD=$(jq -c -n --argjson items "$ITEMS" --arg subOrgCode "$SUBORG_CODE" '{items:$items, subOrgCode:$subOrgCode}')
+
+          RESULT=$(curl_retry -X POST "${API_URL%/}/api/public/lich-cup-dien/ingest" \
+            -H "Content-Type: application/json" \
+            -H "x-ingest-secret: $INGEST_SECRET" \
+            -d "$PAYLOAD")
+          echo "Backend response: $RESULT"

@@ -1,0 +1,37 @@
+name: miniapp-thangphu
+services:
+  backend:
+    build: ./Backend
+    container_name: thangphu-backend
+    restart: unless-stopped
+    env_file: ./Backend/.env
+    environment:
+      PORT: 4012
+    ports:
+      - "${BACKEND_PORT:-4012}:4012"
+    volumes:
+      - ./Backend/media:/app/media
+      - ./Backend/public/images:/app/public/images
+  admin-web:
+    build:
+      context: ./Frontend/AdminWeb
+      args:
+        VITE_API_URL: ${VITE_API_URL_ADMIN}
+        VITE_MAP_LAT: ${VITE_MAP_LAT}
+        VITE_MAP_LNG: ${VITE_MAP_LNG}
+    container_name: thangphu-admin-web
+    restart: unless-stopped
+    ports:
+      - "${ADMIN_PORT:-3012}:80"
+    depends_on: [backend]
+  miniapp:
+    build:
+      context: ./MiniApp
+      args:
+        VITE_API_URL: ${VITE_API_URL_MINIAPP}
+        APP_ID: ${APP_ID}
+    container_name: thangphu-miniapp
+    restart: unless-stopped
+    ports:
+      - "${MINIAPP_PORT:-3013}:80"
+    depends_on: [backend]

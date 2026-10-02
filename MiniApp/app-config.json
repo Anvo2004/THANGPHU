@@ -1,0 +1,16 @@
+{
+  "app": {
+    "title": "Thăng Phú Số",
+    "headerTitle": "Thăng Phú Số",
+    "headerColor": "#1a73e8",
+    "textColor": "white",
+    "leftButton": "none",
+    "statusBar": "normal",
+    "actionBarHidden": false,
+    "hideAndroidBottomNavigationBar": true,
+    "hideIOSSafeAreaBottom": true
+  },
+  "listCSS": [],
+  "listSyncJS": [],
+  "listAsyncJS": []
+}
