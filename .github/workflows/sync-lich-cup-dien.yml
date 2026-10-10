@@ -1,25 +1,33 @@
-name: Sync lich cat dien Thang Phu (thu cong)
+name: Sync lich cat dien (EVN CPC) — DU PHONG THU CONG
 
+# LƯU Ý: Cron tự động đã TẮT. Lịch cắt điện giờ được VPS cào THẲNG từ xenvn.com
+# mỗi 30 phút (Backend/src/services/catDienService.js → startAutoSync). xenvn
+# đăng lại đúng lịch EVN nhưng nằm sau Cloudflare (hạ tầng khác EVN) nên VPS gọi
+# được, không dính EVN chặn IP như cskh-api.cpc.vn — hết cảnh sync chập chờn.
+#
+# Workflow này (fetch EVN CPC từ runner GitHub rồi POST /ingest) được GIỮ LẠI làm
+# NÚT CHẠY TAY khẩn cấp: nếu có ngày VPS không tới được xenvn thì mở tab Actions
+# → chạy workflow này để lấy lại dữ liệu từ EVN CPC. KHÔNG bật lại cron nếu VPS
+# vẫn cào xenvn được — sẽ đẩy trùng lịch (mã trạm EVN ≠ mã slug của xenvn).
 on:
   workflow_dispatch:
 
 jobs:
   sync:
-    if: vars.SYNC_ENABLED == 'true'
     runs-on: ubuntu-latest
     steps:
       - name: Fetch EVN CPC outages and relay to Backend
         env:
-          API_URL: ${{ vars.BACKEND_PUBLIC_URL }}
-          ORG_CODE: ${{ vars.EVNCPC_ORG_CODE }}
-          SUBORG_CODE: ${{ vars.EVNCPC_SUBORG_CODE }}
-          INGEST_SECRET: ${{ secrets.LICH_CUP_DIEN_INGEST_SECRET }}
+          BACKEND_URL: ${{ vars.THANGPHU_API_URL }}
+          ORG_CODE: ${{ vars.THANGPHU_EVNCPC_ORG_CODE }}
+          SUBORG_CODE: ${{ vars.THANGPHU_EVNCPC_SUBORG_CODE }}
+          INGEST_SECRET: ${{ secrets.THANGPHU_LICH_CUP_DIEN_INGEST_SECRET }}
         run: |
           set -e
-          test -n "$API_URL"
-          test -n "$ORG_CODE"
-          test -n "$SUBORG_CODE"
-          test -n "$INGEST_SECRET"
+          : "${BACKEND_URL:?Set THANGPHU_API_URL}"
+          : "${ORG_CODE:?Set THANGPHU_EVNCPC_ORG_CODE}"
+          : "${SUBORG_CODE:?Set THANGPHU_EVNCPC_SUBORG_CODE}"
+          : "${INGEST_SECRET:?Set THANGPHU_LICH_CUP_DIEN_INGEST_SECRET}"
           FROM=$(date -u +"%Y-%m-%d 00:00:00")
           TO=$(date -u -d "+14 days" +"%Y-%m-%d 23:59:00")
 
@@ -68,7 +76,7 @@ jobs:
 
           PAYLOAD=$(jq -c -n --argjson items "$ITEMS" --arg subOrgCode "$SUBORG_CODE" '{items:$items, subOrgCode:$subOrgCode}')
 
-          RESULT=$(curl_retry -X POST "${API_URL%/}/api/public/lich-cup-dien/ingest" \
+          RESULT=$(curl_retry -X POST "${BACKEND_URL%/}/api/public/lich-cup-dien/ingest" \
             -H "Content-Type: application/json" \
             -H "x-ingest-secret: $INGEST_SECRET" \
             -d "$PAYLOAD")

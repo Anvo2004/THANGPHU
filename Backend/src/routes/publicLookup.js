@@ -187,7 +187,11 @@ router.get("/site-info", async (req, res) => {
 // comment đầu newsScrapeService.js). MiniApp chỉ cần gọi domain Backend đã
 // khai báo sẵn.
 //
-// Lấy thôn/đường từ Nominatim rồi ghép nhãn xã của dự án.
+// Chỉ lấy phần chi tiết nhỏ (thôn/đường) từ Nominatim rồi tự ghép "xã Trà
+// Liên, TP. Đà Nẵng" — KHÔNG dùng thẳng field hành chính cấp huyện/tỉnh của
+// Nominatim vì dữ liệu OSM cho khu vực mới sáp nhập (2025) nhiều khả năng
+// chưa cập nhật, có thể vẫn ghi tên xã cũ (Bình Phú/Bình Quế) gây
+// nhầm lẫn cho người dân.
 function pickLocalDetail(address = {}) {
   const candidates = [
     address.hamlet,
@@ -211,7 +215,7 @@ router.get("/reverse-geocode", async (req, res) => {
   try {
     const url = `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=jsonv2&accept-language=vi&zoom=16`;
     const r = await fetch(url, {
-      headers: { "User-Agent": `UBND-ThangPhu-GopY/1.0${config.contact.email ? ` (contact: ${config.contact.email})` : ""}` },
+      headers: { "User-Agent": "UBND-ThangPhu-GopY/1.0 (contact: tttdt-xathangphu@danang.gov.vn)" },
     });
     const data = await r.json();
     const detail = pickLocalDetail(data.address);

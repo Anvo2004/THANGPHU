@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import API_BASE_URL from "./api-config.js";
 import STATIC_NEWS from "./news.js";
 
-// Lấy tin tức từ Backend theo nguồn NEWS_SOURCE_URL được cấu hình riêng.
+// Lấy tin tức từ backend (cào thangphu.danang.gov.vn, ảnh re-host qua Cloudinary).
 // Khởi tạo bằng danh sách tĩnh để có sẵn nội dung; nếu backend trả dữ liệu thì
 // thay bằng dữ liệu mới. Lỗi/rỗng → giữ danh sách tĩnh làm dự phòng.
 export default function useNews() {

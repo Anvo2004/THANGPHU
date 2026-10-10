@@ -60,6 +60,8 @@ function checkInMemory(key, limit, windowSeconds) {
 }
 
 async function checkRateLimit(key, limit, windowSeconds) {
+  // Both Redis and the RAM fallback use a ward-specific key.
+  key = `${config.upstash.keyPrefix}:${key}`;
   const { url, token } = config.upstash;
   if (!url || !token) return checkInMemory(key, limit, windowSeconds);
 

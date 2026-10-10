@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 import SITE from "../data/site.js";
-import congSoImg from "../static/banner-thangphu.svg";
+import congSoImg from "../static/banner-thangphu-portal.png";
 
-// Banner tạm của dự án; thay bằng ảnh được xã Thăng Phú cung cấp.
+
+// Banner công khai từ cổng thông tin xã Thăng Phú.
 const SLIDES = [congSoImg];
 
 const Banner = () => {

@@ -11,8 +11,8 @@ import NoticeCard from "../components/notice-card.jsx";
 import API_BASE_URL from "../data/api-config.js";
 import useNews from "../data/use-news.js";
 import SITE from "../data/site.js";
-import logo from "../static/logo-thangphu.svg";
-import bannerPortal from "../static/banner-thangphu.svg";
+import logo from "../static/ward-icon.svg";
+import bannerPortal from "../static/banner-thangphu-portal.png";
 
 const HomePage = () => {
   const navigate = useNavigate();
@@ -45,7 +45,7 @@ const HomePage = () => {
         <span className="home-hero__blob home-hero__blob--amber" />
         <div className="home-hero__top">
           <div className="home-hero__logo">
-            <img src={logo} alt="Biểu tượng Thăng Phú Số" />
+            <img src={logo} alt="Thăng Phú Số" />
           </div>
           <div>
             <h1 className="home-hero__title">{SITE.heroCaption}</h1>
@@ -114,7 +114,7 @@ const HomePage = () => {
             icon: "headset_mic",
             iconColor: "b",
             title: "Cần hỗ trợ từ UBND xã?",
-            content: contact.hotline ? `Hotline: ${contact.hotline}` : "Thông tin liên hệ đang cập nhật",
+            content: contact.hotline ? `Hotline: ${contact.hotline}` : "Xem thông tin liên hệ và gửi phản ánh tới xã.",
           }}
           onClick={() => navigate("/lien-he")}
         />

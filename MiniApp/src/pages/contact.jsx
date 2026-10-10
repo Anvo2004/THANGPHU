@@ -4,7 +4,7 @@ import { Page, Header } from "zmp-ui";
 import Icon from "../components/icon.jsx";
 import API_BASE_URL from "../data/api-config.js";
 import { openExternal } from "../utils/open-external.js";
-import logo from "../static/logo-thangphu.svg";
+import logo from "../static/ward-icon.svg";
 import SITE from "../data/site.js";
 
 // Suy ra trạng thái "đang làm việc" từ chuỗi workHours dạng
@@ -55,13 +55,7 @@ const ContactPage = () => {
 
   const c = contact || {};
   const openStatus = getOpenStatus(c.workHours);
-  // Bản đồ số Đà Nẵng (bando.danang.gov.vn — .gov.vn, tránh bị Zalo từ chối
-  // kiểm duyệt vì điều hướng/nhúng trang thứ 3 không phải CQNN, xem
-  // .claude/rules — cùng lý do "Bản đồ mưa ngập" ở pctt.js bị ẩn). Kiểm
-  // chứng lại 2026-09-17 bằng Playwright: nhúng iframe VẪN đọc đúng query
-  // ?ward= và hiện đúng bảng thông tin xã Thăng Phú (dân số/diện tích/trụ sở
-  // khớp SiteInfo) dù khung nền bản đồ zoom rộng hơn 1 xã — chấp nhận được
-  // vì mục đích của card này là hiển thị thông tin liên hệ, không phải GIS.
+  // Mở bản đồ số Đà Nẵng theo tên xã.
   const mapEmbedUrl = `https://bando.danang.gov.vn/?ward=${encodeURIComponent(SITE.wardName)}`;
   const mapsHref = mapEmbedUrl;
 
@@ -79,10 +73,10 @@ const ContactPage = () => {
       <div className="contact-card">
         <div className="contact-card__head">
           <div className="contact-card__crest">
-            <img src={logo} alt="Logo xã Thăng Phú" />
+            <img src={logo} alt="Thăng Phú Số" />
           </div>
           <div>
-            <div className="contact-card__name">{c.officeName}</div>
+            <div className="contact-card__name">{c.officeName || "UBND xã Thăng Phú"}</div>
             {openStatus && (
               <div
                 className={`contact-card__open ${
@@ -104,7 +98,7 @@ const ContactPage = () => {
           </span>
           <span className="contact-card__body">
             <div className="contact-card__key">Địa chỉ</div>
-            <div className="contact-card__value">{c.address}</div>
+            <div className="contact-card__value">{c.address || "Đang cập nhật"}</div>
           </span>
         </div>
 
@@ -117,7 +111,8 @@ const ContactPage = () => {
             <button
               type="button"
               className="contact-card__value contact-card__value--link"
-              onClick={() => openExternal(`https://${c.website}`)}
+              disabled={!c.website}
+              onClick={() => c.website && openExternal(`https://${c.website}`)}
             >
               {c.website}
             </button>
@@ -131,7 +126,7 @@ const ContactPage = () => {
           </span>
           <span className="contact-card__body">
             <div className="contact-card__key">Email</div>
-            <div className="contact-card__value">{c.email}</div>
+            <div className="contact-card__value">{c.email || "Đang cập nhật"}</div>
           </span>
           <Icon name="content_copy" className="i17 grey contact-card__action" />
         </div>
@@ -143,14 +138,14 @@ const ContactPage = () => {
           <span className="contact-card__body">
             <div className="contact-card__key">Giờ làm việc</div>
             <div className="contact-card__value contact-card__value--pre">
-              {c.workHours}
+              {c.workHours || "Đang cập nhật"}
             </div>
           </span>
         </div>
 
-        <a className="contact-card__call" href={`tel:${c.hotline}`}>
+        {c.hotline && <a className="contact-card__call" href={`tel:${c.hotline}`}>
           <Icon name="call" className="i20" />Gọi ngay {c.hotline}
-        </a>
+        </a>}
         {c.hotline2 && (
           <a className="contact-card__call2" href={`tel:${c.hotline2}`}>
             <Icon name="call" className="i16" />Hoặc gọi số {c.hotline2}

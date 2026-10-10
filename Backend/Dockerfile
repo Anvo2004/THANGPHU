@@ -10,7 +10,7 @@ RUN npm install --production
 # Copy source code
 COPY . .
 
-# Expose port (must match .env PORT or default 4012)
-EXPOSE 4012
+# Docker Compose sets PORT=4000 inside the container.
+EXPOSE 4000
 
 CMD ["node", "server.js"]

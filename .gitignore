@@ -12,5 +12,5 @@ Backend/public/images/
 .env.*
 !.env.example
 
-# Tài liệu API gốc có token: giữ trên máy, không công bố lên GitHub.
+# Original API documents may contain credentials; keep them local.
 docs/*.docx

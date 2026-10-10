@@ -19,7 +19,7 @@ const FIXES = [
 ];
 
 async function main() {
-  await mongoose.connect(config.mongoUri);
+  await mongoose.connect(config.mongoUri, { dbName: config.mongoDbName });
   console.log("Connected to MongoDB");
 
   for (const { oldHref, newHref } of FIXES) {

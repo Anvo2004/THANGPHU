@@ -3,6 +3,7 @@ const { getAccessToken, refreshAccessToken } = require("./zaloToken");
 // ============================================================
 // Zalo OA Open API — "Nội dung dạng Bài viết" (article).
 //   Tạo:      POST https://openapi.zalo.me/v2.0/article/create  → trả "token" (xử lý bất đồng bộ)
+//   Sửa:      POST https://openapi.zalo.me/v2.0/article/update  → payload như create + "id"
 //   Verify:   POST https://openapi.zalo.me/v2.0/article/verify   → lấy id thật (poll vài lần)
 //   Broadcast:POST https://openapi.zalo.me/v2.0/oa/message       → gửi tới TOÀN BỘ người quan
 //             tâm OA (recipient.target rỗng = không lọc), tối đa 5 bài/lần gọi. Zalo cần ~30
@@ -17,7 +18,9 @@ const { getAccessToken, refreshAccessToken } = require("./zaloToken");
 // ============================================================
 
 const CREATE_URL = "https://openapi.zalo.me/v2.0/article/create";
+const UPDATE_URL = "https://openapi.zalo.me/v2.0/article/update";
 const VERIFY_URL = "https://openapi.zalo.me/v2.0/article/verify";
+const DETAIL_URL = "https://openapi.zalo.me/v2.0/article/getdetail";
 const BROADCAST_URL = "https://openapi.zalo.me/v2.0/oa/message";
 const TIMEOUT_MS = 15000;
 const BROADCAST_MAX_ARTICLES = 5;
@@ -47,38 +50,94 @@ async function articlePost(url, body, { retried = false } = {}) {
   return data;
 }
 
+async function articleGet(url, { retried = false } = {}) {
+  const accessToken = await getAccessToken();
+  const res = await fetch(url, {
+    headers: { access_token: accessToken },
+    signal: AbortSignal.timeout(TIMEOUT_MS),
+  });
+  const data = await res.json();
+  if (data.error === -216 && !retried) {
+    await refreshAccessToken();
+    return articleGet(url, { retried: true });
+  }
+  return data;
+}
+
+// Chi tiết 1 bài viết đã tạo trên OA (id từ verifyArticle). Trả data của Zalo:
+// cần `link_view` (link mở bài trong Zalo) cho "thẻ tin" — xem newsCardService.js.
+// Cùng endpoint HOATIEN đang dùng (zaloBroadcast.getArticleDetail).
+async function getArticleDetail(id) {
+  const data = await articleGet(`${DETAIL_URL}?id=${encodeURIComponent(id)}`);
+  if (data.error !== 0 || !data.data) {
+    throw new Error(`Lấy chi tiết bài viết Zalo thất bại: ${JSON.stringify(data)}`);
+  }
+  return data.data;
+}
+
 // Tạo 1 bài viết trên OA. Trả về "token" (chưa phải id thật) → gọi verifyArticle sau.
-async function createArticle({ title, author, description, coverPhotoUrl, bodyText }) {
+// body: danh sách khối Zalo đã dựng sẵn — { type: "text", content: "<p>…</p>" } |
+// { type: "image", url, caption } (cùng định dạng HOATIEN đang tạo bài thật; ảnh
+// là URL công khai, Zalo tự tải về host lại). Không truyền thì dùng bodyText.
+function articlePayload({ title, author, description, coverPhotoUrl, bodyText, body }) {
   if (!coverPhotoUrl) throw new Error("Bài viết Zalo bắt buộc có ảnh cover (coverPhotoUrl)");
 
   // Zalo công bố title 150 / description 300 nhưng thực tế từ chối chuỗi đúng bằng
   // giới hạn (Thượng Đức đã xác nhận qua log lỗi thật) → lùi biên an toàn 140/250.
-  const payload = {
+  return {
     type: "normal",
     title: truncate(title, 140),
     author: truncate(author || "UBND xã Thăng Phú", 50),
     cover: { cover_type: "photo", photo_url: coverPhotoUrl, status: "show" },
     description: truncate(description || title, 250),
-    body: [{ type: "text", content: bodyText || description || title }],
+    body: body && body.length ? body : [{ type: "text", content: bodyText || description || title }],
     status: "show",
     comment: "show",
   };
+}
 
-  const data = await articlePost(CREATE_URL, payload);
+function articleToken(data, what) {
   if (data.error !== 0 || !data.data || !data.data.token) {
-    throw new Error(`Tạo bài viết Zalo thất bại: ${JSON.stringify(data)}`);
+    const err = new Error(`${what} bài viết Zalo thất bại: ${JSON.stringify(data)}`);
+    err.zaloRejected = true; // Zalo trả lỗi cho nội dung — khác lỗi mạng/timeout
+    throw err;
   }
   return data.data.token;
 }
 
-// Zalo xử lý bất đồng bộ → poll verify vài lần để lấy id thật.
-async function verifyArticle(token, { retries = 8, delayMs = 3000 } = {}) {
+async function createArticle(item) {
+  return articleToken(await articlePost(CREATE_URL, articlePayload(item)), "Tạo");
+}
+
+// Sửa nội dung bài ĐÃ CÓ (giữ nguyên id → thẻ tin đã gửi cho dân cũng hiện nội
+// dung mới, và OA không bị thêm bài trùng). Payload giống create, thêm `id`;
+// cũng trả token để verify. Dùng khi dựng lại bài chưa đầy đủ — xem
+// zaloNewsService.buildArticle.
+async function updateArticle(id, item) {
+  return articleToken(await articlePost(UPDATE_URL, { id, ...articlePayload(item) }), "Cập nhật");
+}
+
+// Zalo xử lý bất đồng bộ → poll verify đến ~1 phút (bài có nhiều ảnh, hoặc Zalo
+// đang chậm, có thể lâu hơn 20 giây).
+async function verifyArticle(token, { retries = 12, delayMs = 5000 } = {}) {
+  let last = null;
   for (let attempt = 1; attempt <= retries; attempt++) {
     const data = await articlePost(VERIFY_URL, { token });
     if (data.error === 0 && data.data && data.data.id) return data.data.id;
+    last = data;
+    // -214 "Media is being processed" = đang xử lý, chờ tiếp. Lỗi khác (vd. -200
+    // "Upload media failed" khi ảnh quá nặng) là hỏng hẳn: chờ thêm cũng vô ích,
+    // bài sẽ KHÔNG BAO GIỜ xong (2026-10-05 đã mất 7 lần tạo lại vì chờ mù).
+    if (data.error !== -214) {
+      const err = new Error(`Zalo xử lý bài viết thất bại: ${JSON.stringify(data)}`);
+      err.zaloRejected = true;
+      throw err;
+    }
     if (attempt < retries) await sleep(delayMs);
   }
-  throw new Error("Không lấy được id bài viết sau nhiều lần verify (Zalo xử lý chậm hơn bình thường)");
+  throw new Error(
+    `Không lấy được id bài viết sau nhiều lần verify (Zalo xử lý chậm hơn bình thường): ${JSON.stringify(last)}`
+  );
 }
 
 // Gửi (broadcast) tối đa 5 bài đã tạo tới TOÀN BỘ người quan tâm OA.
@@ -109,4 +168,4 @@ async function broadcastArticle(articleIds) {
   return data.data.message_id;
 }
 
-module.exports = { createArticle, verifyArticle, broadcastArticle };
+module.exports = { createArticle, updateArticle, verifyArticle, getArticleDetail, broadcastArticle };

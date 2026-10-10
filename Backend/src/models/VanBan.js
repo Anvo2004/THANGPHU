@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-// Văn bản lấy từ nguồn VAN_BAN_SOURCE_URL được cấu hình riêng.
+// Scraped from thangphu.danang.gov.vn's "Thông tin chỉ đạo điều hành" listing.
 // Unlike Đại Lộc's 1022.vn source, that page has no separate structured columns —
 // document number/date are embedded in the free-text title, so they're only
 // best-effort regex-extracted, not guaranteed for every entry.
@@ -14,7 +14,7 @@ const vanBanSchema = new mongoose.Schema({
     enum: ["quy-dinh", "chinh-sach", "thong-bao", "khac"],
     default: "khac",
   },
-  source: { type: String, default: "" },
+  source: { type: String, default: "thangphu.danang.gov.vn" },
   crawledAt: { type: Date, default: Date.now },
 });
 

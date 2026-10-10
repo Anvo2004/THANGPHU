@@ -151,6 +151,28 @@ async function sendZaloImagesToGroup(groupId, attachmentIds) {
   }
 }
 
+// "Thẻ tin": tin tư vấn dạng danh sách (list template) 1 phần tử — Zalo hiển thị
+// ảnh lớn + tiêu đề đậm + mô tả, bấm vào mở element.default_action.url. Cùng cơ
+// chế HOATIEN/QUESON đã chạy thật (zaloBroadcast.sendArticleCard). Ném lỗi kèm
+// mã Zalo (err.zaloCode) để job gửi đếm và gom theo mã.
+async function sendZaloCard(targetId, element, isGroup = false) {
+  const data = await zaloPost("/message", {
+    recipient: isGroup ? { group_id: String(targetId) } : { user_id: String(targetId) },
+    message: {
+      attachment: {
+        type: "template",
+        payload: { template_type: "list", elements: [element] },
+      },
+    },
+  });
+  if (data.error !== 0) {
+    const err = new Error(data.message || "Zalo API lỗi");
+    err.zaloCode = data.error;
+    throw err;
+  }
+  return data;
+}
+
 async function sendZaloImageWithLink(userId, attachmentId, url, buttonTitle = "▶ Xem") {
   return zaloPost("/message", {
     recipient: { user_id: String(userId) },
@@ -322,6 +344,7 @@ module.exports = {
   uploadFileToZalo,
   sendZaloImages,
   sendZaloImagesToGroup,
+  sendZaloCard,
   sendZaloImageWithLink,
   sendZaloImageWithLinkToGroup,
   sendZaloFile,

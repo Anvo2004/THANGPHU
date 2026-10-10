@@ -35,7 +35,7 @@ const PcttKyNangChiTietPage = () => {
         <div className="pctt-detail__images">
           {skill.images.map((img) => (
             <figure key={img.url} className="pctt-detail__image-item">
-              <img src={img.url.startsWith("/") ? `${API_BASE_URL}${img.url}` : img.url} alt={img.caption} loading="lazy" />
+              <img src={img.url} alt={img.caption} loading="lazy" />
               <figcaption>{img.caption}</figcaption>
             </figure>
           ))}

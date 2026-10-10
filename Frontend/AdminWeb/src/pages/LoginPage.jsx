@@ -8,15 +8,12 @@ import 'leaflet/dist/leaflet.css'
 import { api } from '@/lib/api'
 import { useAuth } from '@/contexts/AuthContext'
 import { toast } from 'sonner'
-import logoImg from '@/images/logo-thangphu.svg'
+import logoImg from '@/images/ward-icon.svg'
 import '@/styles/login.css'
 
-// Tọa độ trung tâm Xã Thăng Phú, Thành phố Đà Nẵng
-const mapLat = import.meta.env.VITE_MAP_LAT?.trim()
-const mapLng = import.meta.env.VITE_MAP_LNG?.trim()
-const HAS_LOCATION = Boolean(mapLat && mapLng && Number.isFinite(Number(mapLat)) && Number.isFinite(Number(mapLng)) && Math.abs(Number(mapLat)) <= 90 && Math.abs(Number(mapLng)) <= 180)
-const LAT = HAS_LOCATION ? Number(mapLat) : 0
-const LNG = HAS_LOCATION ? Number(mapLng) : 0
+// Tâm thành phố để mở bản đồ; ranh giới xã được tra theo tên.
+const LAT = 16.0544
+const LNG = 108.2022
 
 export default function LoginPage() {
   const navigate = useNavigate()
@@ -169,7 +166,6 @@ export default function LoginPage() {
       new THREE.SphereGeometry(0.011, 16, 16),
       new THREE.MeshBasicMaterial({ color: 0xffd23f })
     )
-    dot.visible = HAS_LOCATION
     dot.position.copy(pos)
     group.add(dot)
     const sprite = new THREE.Sprite(new THREE.SpriteMaterial({
@@ -177,7 +173,6 @@ export default function LoginPage() {
       blending: THREE.AdditiveBlending, depthWrite: false,
     }))
     sprite.scale.set(0.13, 0.13, 1)
-    sprite.visible = HAS_LOCATION
     sprite.position.copy(pos)
     group.add(sprite)
     r.current.markerSprite = sprite
@@ -270,8 +265,7 @@ export default function LoginPage() {
       if (globeRef.current) globeRef.current.style.opacity = '0'
       setTimeout(() => {
         r.current.flying = false
-        if (HAS_LOCATION) setShowMap(true)
-        else toast.info("Tọa độ trụ sở Thăng Phú đang cập nhật")
+        setShowMap(true)
         setTimeout(() => initMap(), 220)
       }, 550)
     }
@@ -305,7 +299,7 @@ export default function LoginPage() {
     const el = mapRef.current
     if (r.current.lmap) { try { r.current.lmap.remove() } catch { /* noop */ } r.current.lmap = null }
 
-    const map = L.map(el, { center: [LAT, LNG], zoom: 13, zoomControl: true, attributionControl: true })
+    const map = L.map(el, { center: [LAT, LNG], zoom: 9, zoomControl: true, attributionControl: true })
     r.current.lmap = map
 
     L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
@@ -317,12 +311,6 @@ export default function LoginPage() {
 
     setTimeout(() => { try { map.invalidateSize() } catch { /* noop */ } }, 140)
 
-    const pinIcon = L.divIcon({
-      className: 'dailoc-pin',
-      html: '<div style="width:22px;height:22px;background:#2563eb;border:2.5px solid #fff;border-radius:50% 50% 50% 0;transform:rotate(-45deg);box-shadow:0 2px 7px rgba(0,0,0,0.45);"></div>',
-      iconSize: [22, 22], iconAnchor: [11, 22],
-    })
-    L.marker([LAT, LNG], { icon: pinIcon, interactive: false }).addTo(map)
 
     loadBoundary(map)
   }
@@ -375,7 +363,7 @@ export default function LoginPage() {
           <div ref={mapRef} className="login-map-el" />
           <div className="login-map-badge">
             <span className="dash" />
-            <span className="label">Ranh giới xã Thăng Phú</span>
+            <span className="label">Bản đồ khu vực Thăng Phú</span>
           </div>
         </div>
       )}

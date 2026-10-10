@@ -23,10 +23,10 @@ const QUICK_LINKS = [
   { icon: "call", color: "p", label: "Liên hệ", path: "/lien-he" },
   { icon: "qr_code_2", color: "n", label: "Tạo QR bài viết", href: "https://qrcode.danangportal.gov.vn/Home/CreateQRCode" },
   { icon: "computer", color: "c", label: "Bình dân số học", href: "https://binhdanhocvuso.danang.gov.vn/" },
-  { icon: "star", color: "a", label: "Khảo sát hài lòng", href: "https://share.google/VwBQyXgjyWhwe4sEh" },
+  { icon: "star", color: "a", label: "Khảo sát hài lòng", href: "https://khaosathailong.danang.gov.vn/" },
   { icon: "public", color: "v", label: "Cổng dữ liệu", href: "https://congdulieu.vn" },
   { icon: "search", color: "b", label: "Tra cứu hồ sơ", path: "/tra-cuu-ho-so" },
-  { icon: "auto_awesome", color: "p", label: "DaNang AI", href: "https://share.google/B3oZQo7knRKbiIOMA" },
+  { icon: "auto_awesome", color: "p", label: "DaNang AI", href: "https://danangai.1022.vn/" },
 ];
 
 // Sao y nguyên MiniApp/src/data/services.js — SERVICES (section=service)
@@ -69,7 +69,7 @@ const PORTAL_LINKS = [
     color: "c",
     label: "UBND xã",
     description: "Trang thông tin điện tử xã Thăng Phú",
-    href: "", // chưa xác nhận URL — xem docs/SETUP_CHECKLIST.md, cán bộ xã điền qua AdminWeb
+    href: "https://thangphu.danang.gov.vn/",
   },
 ];
 
@@ -86,7 +86,7 @@ async function seedSection(section, items) {
 }
 
 async function main() {
-  await mongoose.connect(config.mongoUri);
+  await mongoose.connect(config.mongoUri, { dbName: config.mongoDbName });
   console.log("Connected to MongoDB");
 
   await seedSection("quick_link", QUICK_LINKS);

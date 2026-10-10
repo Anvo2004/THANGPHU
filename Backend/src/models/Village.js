@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-// Danh sách 12 thôn xã Thăng Phú sau sắp xếp — nhập tay qua route admin
+// Danh sách thôn xã Thăng Phú — nhập tay qua route admin
 // (Postman/AdminWeb), không có nguồn cào tự động.
 const villageSchema = new mongoose.Schema({
   ten: { type: String, required: true },

@@ -24,7 +24,7 @@ function getClient() {
 }
 
 function isConfigured() {
-  return Boolean(config.anthropic.apiKey && config.anthropic.model);
+  return Boolean(config.anthropic.apiKey);
 }
 
 const SYSTEM_PROMPT = `Bạn là Trợ lý số của Mini App "Thăng Phú Số" (Đà Nẵng), giúp người dân hỏi đáp về thủ tục hành chính và thông tin của xã.

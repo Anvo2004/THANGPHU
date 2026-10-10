@@ -1,19 +1,20 @@
-﻿# Các module được kế thừa
+# Chuyển đổi sang Thăng Phú — 10/10/2026
 
-Dự án mới sao chép từ MINIAPP_TRALIEN ngày 02/10/2026. Bảng này mô tả mã nguồn đã có, không xác nhận đã hoạt động trên production của Thăng Phú.
+MiniApp, AdminWeb và Backend giữ chức năng, bố cục; thay nhận diện Thăng Phú.
+Parser đã đọc 35 tin và 8 văn bản từ HTML thật; nội dung bài có văn bản và hình ảnh.
+Đây là số mục trên trang khi kiểm tra, không phải tổng kho tin/văn bản.
+Chưa tải các trang văn bản cũ hơn, chưa ghi vào database sản xuất.
 
-Đánh giá mới theo ảnh yêu cầu người dùng: [DANH_GIA_CHUC_NANG_2026-10-02.md](DANH_GIA_CHUC_NANG_2026-10-02.md).
+MongoDB, Zalo, 1022, IOCTC, EVN, Cloudinary cần tài khoản riêng; chưa kiểm tra
+với tài khoản thật. Thôn, văn hóa, du lịch để trống chờ dữ liệu của xã.
 
-| Nhóm | Chức năng đã giữ | Điều kiện sử dụng |
-|---|---|---|
-| Quản trị | Đăng nhập, JWT, người dùng, phân quyền, dashboard, thống kê | MongoDB riêng, JWT và seed admin |
-| Phản ánh | Gửi ảnh/vị trí, quản lý, xử lý, phản hồi, phản ánh của tôi | DB, Zalo token hợp lệ cho chức năng cá nhân, cấu hình lưu ảnh |
-| Zalo OA | Token, webhook, nhóm nhận tin, OTP, gửi tin/bài viết | OA và ứng dụng được cấp quyền riêng |
-| Nội dung | Tin tức, văn bản, thông báo, dân số, thôn, văn hóa, du lịch, liên hệ | Nhập dữ liệu thật và nguồn của Thăng Phú |
-| Dịch vụ | Danh mục TTHC, tra cứu hồ sơ, lịch điện, lịch y tế, trợ cấp, tiện ích | DB, nguồn điện, tài khoản IOCTC nếu tra cứu hồ sơ |
-| Góp ý 1022 | Gửi phản ánh, retry và đồng bộ trạng thái | Tài khoản, lĩnh vực, nguồn góp ý được cấp |
-| PCTT | Kỹ năng, ảnh/video, bản đồ mưa ngập | Đã có media riêng; kiểm tra nội dung trước khi phát hành |
-| Trợ lý số | Hỏi đáp AI, lấy ngữ cảnh dữ liệu hành chính | Anthropic API key và model |
-| Triển khai | Docker, PM2 workflow, ingest điện thủ công | VPS/repository/domain riêng; bật cấu hình khi sẵn sàng |
+## Nguồn
 
-URL tin/văn bản mới có thể dùng CMS khác, cần kiểm tra parser sau khi nhận nguồn. Chưa kết nối DB hay kiểm thử dịch vụ bên ngoài. Tất cả đầu mục cần bổ sung nằm trong SETUP_CHECKLIST.md.
+- [Cổng thành phố: xã Thăng Phú](https://cttdt.danangportal.gov.vn/vi/w/xa-thang-phu):
+  trụ sở thôn Tú Trà; diện tích 60,50 km²; dân số 17.266 tại tháng 7/2025.
+  Mốc dữ liệu được lưu và hiển thị ở trang dân số.
+- [Cổng xã](https://thangphu.danang.gov.vn/): email tttdt-xathangphu@danang.gov.vn.
+  Không lấy điện thoại ban biên tập làm hotline tiếp dân.
+- [Văn bản](https://thangphu.danang.gov.vn/van-ban): bảng CMS14/Telerik.
+- [Banner cổng xã](https://thangphu.danang.gov.vn/QTIUpload/QTIImagev2Slide/thumbnail/1700slide1.png):
+  lưu tại MiniApp/src/static/banner-thangphu-portal.png.

@@ -16,21 +16,19 @@ const DEFAULT_CATEGORIES = [
 ];
 
 async function main() {
-  if (!config.mongoUri) throw new Error("Thiếu MONGO_URI của Thăng Phú");
-  if (config.adminSeed.password.length < 12) throw new Error("Điền ADMIN_SEED_PASSWORD ít nhất 12 ký tự trước khi seed");
-  await mongoose.connect(config.mongoUri);
+  await mongoose.connect(config.mongoUri, { dbName: config.mongoDbName });
   console.log("Connected to MongoDB");
 
-  const existing = await AdminUser.findOne({ username: config.adminSeed.username });
+  const existing = await AdminUser.findOne({ username: "admin" });
   if (!existing) {
-    const password = await bcrypt.hash(config.adminSeed.password, 10);
+    const password = await bcrypt.hash("Admin@123", 10);
     await AdminUser.create({
-      username: config.adminSeed.username,
+      username: "admin",
       password,
       fullName: "Quản trị viên",
       role: "superadmin",
     });
-    console.log("Created superadmin using ADMIN_SEED_USERNAME / ADMIN_SEED_PASSWORD.");
+    console.log("Created superadmin: admin / Admin@123 — change this password after first login.");
   } else {
     console.log("Superadmin 'admin' already exists, skipping.");
   }

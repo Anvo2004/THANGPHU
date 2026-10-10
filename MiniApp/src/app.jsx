@@ -36,7 +36,7 @@ const MyApp = () => {
         basename check without the real URL ever matching it -> blank page with
         no console error. Routing in-memory sidesteps browser-URL matching
         entirely. Tradeoff: sub-page URLs on the standalone web mirror
-        (web preview) are no longer deep-linkable/refreshable.
+        (web mirror) are no longer deep-linkable/refreshable.
       */}
       <ZMPRouter memoryRouter>
         <Layout>

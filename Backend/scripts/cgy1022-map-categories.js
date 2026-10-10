@@ -27,7 +27,7 @@ function guess(name) {
 }
 
 (async () => {
-  await mongoose.connect(config.mongoUri);
+  await mongoose.connect(config.mongoUri, { dbName: config.mongoDbName });
   const cats = await Category.find({}).sort({ order: 1 }).lean();
   console.log(`Có ${cats.length} danh mục:\n`);
   const map = {};

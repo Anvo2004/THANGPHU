@@ -9,6 +9,8 @@ const danSoSchema = new mongoose.Schema({
   hoDan: { type: Number, default: null },
   gioiTinh: { type: mongoose.Schema.Types.Mixed, default: null }, // { nam, nu } hoặc null
   doTuoi: { type: mongoose.Schema.Types.Mixed, default: null }, // [{ label, percent }] hoặc null
+  source: { type: String, default: "" },
+  dataAsOf: { type: String, default: "" },
   updatedAt: { type: Date, default: Date.now },
 });
 

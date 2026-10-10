@@ -6,7 +6,6 @@ const config = require("./config");
 const routes = require("./routes");
 
 const app = express();
-const escapeHtml = (value) => String(value || "Đang cập nhật").replace(/[&<>"']/g, (ch) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[ch]));
 
 app.use(cors({ origin: config.corsOrigin }));
 // Giữ lại rawBody để zaloWebhook.js xác thực chữ ký X-ZEvent-Signature
@@ -34,7 +33,7 @@ app.get("/", (req, res) => res.send(`
 <!DOCTYPE html>
 <html>
 <head>
-${config.siteVerification ? `<meta name="zalo-platform-site-verification" content="${escapeHtml(config.siteVerification)}" />` : ""}
+    ${config.zalo.siteVerification ? `<meta name="zalo-platform-site-verification" content="${config.zalo.siteVerification.replace(/[^a-zA-Z0-9_-]/g, "")}" />` : ""}
     <title>ThangPhu API</title>
 </head>
 <body>API is running</body>
@@ -67,7 +66,7 @@ app.get("/dieu-khoan-su-dung", (req, res) => res.send(`
 </head>
 <body>
   <h1>Điều khoản sử dụng &amp; Chính sách quyền riêng tư</h1>
-  <p class="updated">Ứng dụng "Thăng Phú Số" — Bản dự thảo — cần xác nhận trước khi phát hành</p>
+  <p class="updated">Ứng dụng "Thăng Phú Số" — Cập nhật lần cuối: 10/10/2026</p>
 
   <h2>1. Đơn vị vận hành</h2>
   <p>Zalo Mini App "Thăng Phú Số" do <strong>UBND xã Thăng Phú, Thành phố Đà Nẵng</strong> vận
@@ -105,10 +104,9 @@ app.get("/dieu-khoan-su-dung", (req, res) => res.send(`
   <h2>6. Liên hệ</h2>
   <div class="contact-box">
     <p><strong>UBND xã Thăng Phú</strong></p>
-    <p>Địa chỉ: ${escapeHtml(config.contact.address)}</p>
-    <p>Hotline: ${escapeHtml(config.contact.phone)}</p>
-    <p>Email: ${escapeHtml(config.contact.email)}</p>
-    <p>Website: ${escapeHtml(config.contact.website)}</p>
+    <p>Địa chỉ: Thôn Tú Trà, xã Thăng Phú, TP Đà Nẵng</p>
+    <p>Email: tttdt-xathangphu@danang.gov.vn</p>
+    <p>Website: thangphu.danang.gov.vn</p>
   </div>
 </body>
 </html>

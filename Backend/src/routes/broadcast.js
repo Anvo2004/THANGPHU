@@ -3,8 +3,10 @@ const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
 const SendLog = require("../models/SendLog");
+const AdminUser = require("../models/AdminUser");
 const { requireRole } = require("../middleware/auth");
 const broadcastService = require("../services/broadcastService");
+const newsCardService = require("../services/newsCardService");
 const { uploadImageToZalo, uploadFileToZalo } = require("../utils/zaloApi");
 const config = require("../config");
 
@@ -194,6 +196,63 @@ router.get("/logs", async (req, res) => {
     .sort({ createdAt: -1 })
     .limit(100);
   res.json({ logs });
+});
+
+// ===== Thẻ tin: gửi 1 tin tức dạng thẻ (ảnh + tiêu đề + mô tả) tới tất cả người
+// quan tâm OA qua tin tư vấn — xem services/newsCardService.js =====
+
+router.get("/news-cards/news", async (req, res) => {
+  res.json(await newsCardService.listNews({ q: req.query.q || "", page: req.query.page }));
+});
+
+// Gửi thử cho chính cán bộ đang đăng nhập (Zalo User ID gắn trong Tài khoản Admin).
+router.post("/news-cards/test", async (req, res) => {
+  const { newsId } = req.body;
+  if (!newsId) return res.status(400).json({ error: "Thiếu tin cần gửi" });
+  const me = await AdminUser.findById(req.user.id).select("zaloUserId").lean();
+  if (!me?.zaloUserId) {
+    return res.status(400).json({
+      error: "Tài khoản của bạn chưa gắn Zalo User ID (Tài khoản Admin → Sửa → Tài khoản Zalo)",
+    });
+  }
+  try {
+    const { target } = await newsCardService.sendTestCard(newsId, me.zaloUserId);
+    res.json({ ok: true, target });
+  } catch (err) {
+    if (err.status) throw err;
+    res.status(502).json({ error: `Zalo từ chối: ${err.message}`, code: err.zaloCode ?? null });
+  }
+});
+
+// Gửi tới TẤT CẢ người quan tâm OA (danh sách lấy thẳng từ Zalo lúc gửi). Trả
+// jobId ngay — tạo bài OA + gửi chạy nền, theo dõi qua /status/:jobId.
+router.post("/news-cards", async (req, res) => {
+  const { newsId } = req.body;
+  if (!newsId) return res.status(400).json({ error: "Thiếu tin cần gửi" });
+  const { jobId } = await newsCardService.sendNewsCard({ newsId, sentBy: req.user.id });
+  res.json({ jobId });
+});
+
+// Tạo lại bài viết OA cho 1 tin (sửa chính bài cũ, KHÔNG gửi cho ai) — dùng khi
+// bài thiếu nội dung do Zalo lỗi lúc tạo. Trả jobId, theo dõi qua /status/:jobId.
+router.post("/news-cards/rebuild", async (req, res) => {
+  const { newsId } = req.body;
+  if (!newsId) return res.status(400).json({ error: "Thiếu tin cần tạo lại bài" });
+  const { jobId } = await newsCardService.rebuildArticle(newsId);
+  res.json({ jobId });
+});
+
+// Tự động gửi thẻ cho tin mới — { enabled, since }.
+router.get("/news-cards/auto", async (req, res) => {
+  res.json(await newsCardService.getAutoConfig());
+});
+
+router.put("/news-cards/auto", async (req, res) => {
+  res.json(await newsCardService.setAutoConfig(Boolean(req.body.enabled)));
+});
+
+router.get("/news-cards/history", async (req, res) => {
+  res.json({ items: await newsCardService.listHistory() });
 });
 
 module.exports = router;

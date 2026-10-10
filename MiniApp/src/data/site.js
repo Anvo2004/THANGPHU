@@ -5,7 +5,7 @@
 const SITE = {
   appName: "Thăng Phú Số",
   shortName: "Thăng Phú kết nối số",
-  province: "Thành phố Đà Nẵng", // Cần xác nhận thông tin địa phương trước khi phát hành.
+  province: "Thành phố Đà Nẵng", // xác nhận từ thangphu.danang.gov.vn
   badge: "Chính quyền số",
   heroCaption: "Xã Thăng Phú",
   wardName: "Thăng Phú", // dùng để build query ?ward= cho bando.danang.gov.vn (pages/contact.jsx)

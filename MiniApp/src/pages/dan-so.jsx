@@ -43,6 +43,7 @@ const DanSoPage = () => {
         <div className="lookup-hero__title">Thông tin Dân số</div>
         <div className="lookup-hero__desc">
           Số liệu thống kê dân số xã Thăng Phú
+          {DAN_SO.dataAsOf && <div>Số liệu tại thời điểm {DAN_SO.dataAsOf.toLowerCase()}</div>}
         </div>
       </div>
 

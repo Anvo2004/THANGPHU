@@ -11,7 +11,9 @@ async function getCachedFollowers() {
   return raw ? JSON.parse(raw) : [];
 }
 
-async function syncFollowers() {
+// Toàn bộ người đang quan tâm OA, lấy thẳng từ Zalo (phân trang 50/lượt) —
+// [{ user_id }]. Dùng cho đồng bộ danh sách và gửi thẻ tin tới tất cả follower.
+async function fetchAllFollowers() {
   const followers = [];
   let offset = 0;
   const count = 50;
@@ -26,6 +28,11 @@ async function syncFollowers() {
     if (batch.length < count) break;
     offset += count;
   }
+  return followers;
+}
+
+async function syncFollowers() {
+  const followers = await fetchAllFollowers();
   const { getUserProfile } = require("../utils/zaloApi");
 
   const profiles = [];
@@ -90,11 +97,13 @@ async function importGroupsFromCategories() {
 
 const jobs = new Map(); // jobId -> { total, sent, failed, done }
 
-function createJob(total) {
+// ttlMs: job gửi lâu (vd. thẻ tin tới hàng nghìn người, 500ms/người) phải sống
+// lâu hơn thời gian gửi, nếu không bị xoá giữa chừng và trang theo dõi mất tiến độ.
+function createJob(total, ttlMs = 10 * 60 * 1000) {
   const jobId = `job_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
   jobs.set(jobId, { total, sent: 0, failed: 0, done: false });
-  // auto-purge after 10 minutes so this Map doesn't grow unbounded
-  setTimeout(() => jobs.delete(jobId), 10 * 60 * 1000).unref?.();
+  // auto-purge so this Map doesn't grow unbounded
+  setTimeout(() => jobs.delete(jobId), ttlMs).unref?.();
   return jobId;
 }
 
@@ -214,11 +223,13 @@ async function sendBroadcast({ userIds, message, attachments = {}, adminNote, se
 
 module.exports = {
   getCachedFollowers,
+  fetchAllFollowers,
   syncFollowers,
   getGroups,
   addGroup,
   removeGroup,
   importGroupsFromCategories,
   sendBroadcast,
+  createJob,
   getJobStatus,
 };

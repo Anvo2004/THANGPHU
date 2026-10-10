@@ -13,7 +13,7 @@ const config = require("../src/config");
 const News = require("../src/models/News");
 
 (async () => {
-  await mongoose.connect(config.mongoUri);
+  await mongoose.connect(config.mongoUri, { dbName: config.mongoDbName });
 
   const pending = await News.countDocuments({ "zalo.articleId": "", "zalo.skip": { $ne: true } });
   console.log(`Tin chưa đăng & chưa skip: ${pending}`);

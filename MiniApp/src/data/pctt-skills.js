@@ -23,39 +23,39 @@ const PCTT_SKILLS = [
     ],
     "images": [
       {
-        "url": "/media/pctt-images/hi2mhjout8wltehnnrlm.jpg",
+        "url": "https://res.cloudinary.com/dnmz1rjbe/image/upload/v1785239333/pctt-skills/01/hi2mhjout8wltehnnrlm.jpg",
         "caption": "Cấp gió và mức nguy hại của ATNĐ-Bão"
       },
       {
-        "url": "/media/pctt-images/dsghxd4wuun8yca4g491.jpg",
+        "url": "https://res.cloudinary.com/dnmz1rjbe/image/upload/v1785239334/pctt-skills/01/dsghxd4wuun8yca4g491.jpg",
         "caption": "Đảm bảo an toàn tàu thuyền khi có ATNĐ Bão"
       },
       {
-        "url": "/media/pctt-images/s79mevehr2oh2wkeiunk.jpg",
+        "url": "https://res.cloudinary.com/dnmz1rjbe/image/upload/v1785239335/pctt-skills/01/s79mevehr2oh2wkeiunk.jpg",
         "caption": "Hướng dẫn neo đậu tàu thuyền tránh trú bão"
       },
       {
-        "url": "/media/pctt-images/daid8k742hhg10k0rwel.jpg",
+        "url": "https://res.cloudinary.com/dnmz1rjbe/image/upload/v1785239336/pctt-skills/01/daid8k742hhg10k0rwel.jpg",
         "caption": "HD gia cố bảo vệ ao đầm lồng bè thủy sản trước bão"
       },
       {
-        "url": "/media/pctt-images/ccuq1aey8wm83nhsovou.jpg",
+        "url": "https://res.cloudinary.com/dnmz1rjbe/image/upload/v1785239337/pctt-skills/01/ccuq1aey8wm83nhsovou.jpg",
         "caption": "HD đảm bảo an toàn trước, trong ATNĐ Bão cho ngư dân"
       },
       {
-        "url": "/media/pctt-images/jsjjhiipqvgpjooau0p0.jpg",
+        "url": "https://res.cloudinary.com/dnmz1rjbe/image/upload/v1785239338/pctt-skills/01/jsjjhiipqvgpjooau0p0.jpg",
         "caption": "HD an toàn trước khi bão đổ bộ cho dân cư đất liền"
       },
       {
-        "url": "/media/pctt-images/sn7mzg1q0x3jtmfvdv7m.jpg",
+        "url": "https://res.cloudinary.com/dnmz1rjbe/image/upload/v1785239339/pctt-skills/01/sn7mzg1q0x3jtmfvdv7m.jpg",
         "caption": "HD an toàn khi bão đổ bộ cho dân cư đất liền"
       },
       {
-        "url": "/media/pctt-images/am5glphfmg4algei4uyt.jpg",
+        "url": "https://res.cloudinary.com/dnmz1rjbe/image/upload/v1785239340/pctt-skills/01/am5glphfmg4algei4uyt.jpg",
         "caption": "Những việc cần làm sau bão"
       },
       {
-        "url": "/media/pctt-images/bgpjjqtwyjbeiqjnninr.jpg",
+        "url": "https://res.cloudinary.com/dnmz1rjbe/image/upload/v1785239342/pctt-skills/01/bgpjjqtwyjbeiqjnninr.jpg",
         "caption": "HD an toàn cho trẻ em khi có bão"
       }
     ]
@@ -88,27 +88,27 @@ const PCTT_SKILLS = [
     ],
     "images": [
       {
-        "url": "/media/pctt-images/qm4vr50indnrhmf0fyvh.jpg",
+        "url": "https://res.cloudinary.com/dnmz1rjbe/image/upload/v1785239343/pctt-skills/02/qm4vr50indnrhmf0fyvh.jpg",
         "caption": "Những việc cần làm trước lũ"
       },
       {
-        "url": "/media/pctt-images/nz8lgmmbt3xsr5duuqkg.jpg",
+        "url": "https://res.cloudinary.com/dnmz1rjbe/image/upload/v1785239344/pctt-skills/02/nz8lgmmbt3xsr5duuqkg.jpg",
         "caption": "HD kxy năng an toàn trong và sau lũ"
       },
       {
-        "url": "/media/pctt-images/mbhbkyaugo8mn0igsvhw.jpg",
+        "url": "https://res.cloudinary.com/dnmz1rjbe/image/upload/v1785239346/pctt-skills/02/mbhbkyaugo8mn0igsvhw.jpg",
         "caption": "Đảm bảo an toàn khi hồ thủy điện vận hành xả lũ"
       },
       {
-        "url": "/media/pctt-images/qdr3ur2ftbhqd6iabfal.jpg",
+        "url": "https://res.cloudinary.com/dnmz1rjbe/image/upload/v1785239347/pctt-skills/02/qdr3ur2ftbhqd6iabfal.jpg",
         "caption": "Hướng dẫn đảm bảo an toàn vùng lũ ngập sâu, nước dâng nhanh"
       },
       {
-        "url": "/media/pctt-images/sgkrkalkdpxkumtpwwdq.jpg",
+        "url": "https://res.cloudinary.com/dnmz1rjbe/image/upload/v1785239348/pctt-skills/02/sgkrkalkdpxkumtpwwdq.jpg",
         "caption": "Vệ sinh MT, phòng tránh dịch bệnh sau mua lũ"
       },
       {
-        "url": "/media/pctt-images/agkuosbtdxo5m3knngda.jpg",
+        "url": "https://res.cloudinary.com/dnmz1rjbe/image/upload/v1785239349/pctt-skills/02/agkuosbtdxo5m3knngda.jpg",
         "caption": "Kỹ năng AT phòng tránh đuối nước cho trẻ em"
       }
     ]
@@ -120,11 +120,11 @@ const PCTT_SKILLS = [
     "videos": [],
     "images": [
       {
-        "url": "/media/pctt-images/wuzbecwleuvmffqsskmr.jpg",
+        "url": "https://res.cloudinary.com/dnmz1rjbe/image/upload/v1785239350/pctt-skills/03/wuzbecwleuvmffqsskmr.jpg",
         "caption": "Ngập lụt nguyên tắc phòng tránh"
       },
       {
-        "url": "/media/pctt-images/ugf5ni7oyyxcskiq4wjv.jpg",
+        "url": "https://res.cloudinary.com/dnmz1rjbe/image/upload/v1785239351/pctt-skills/03/ugf5ni7oyyxcskiq4wjv.jpg",
         "caption": "HD đảm bảo an toàn khi có ngập lụt đô thị"
       }
     ]
@@ -136,7 +136,7 @@ const PCTT_SKILLS = [
     "videos": [],
     "images": [
       {
-        "url": "/media/pctt-images/yofbzbnz9w8aiv2asexc.jpg",
+        "url": "https://res.cloudinary.com/dnmz1rjbe/image/upload/v1785239352/pctt-skills/04/yofbzbnz9w8aiv2asexc.jpg",
         "caption": "Mưa lớn nguyên tắc phòng tránh"
       }
     ]
@@ -165,19 +165,19 @@ const PCTT_SKILLS = [
     ],
     "images": [
       {
-        "url": "/media/pctt-images/kierbormpxq9gzxoe5l7.jpg",
+        "url": "https://res.cloudinary.com/dnmz1rjbe/image/upload/v1785239353/pctt-skills/05/kierbormpxq9gzxoe5l7.jpg",
         "caption": "Nguyên nhân dấu hiệu nhận biết lũ quét"
       },
       {
-        "url": "/media/pctt-images/xqaesycj4zhgxi0u1f3c.jpg",
+        "url": "https://res.cloudinary.com/dnmz1rjbe/image/upload/v1785239354/pctt-skills/05/xqaesycj4zhgxi0u1f3c.jpg",
         "caption": "Những việc nên làm để an toàn khi có lũ quét"
       },
       {
-        "url": "/media/pctt-images/e07uieddy0q9neu3rhbv.jpg",
+        "url": "https://res.cloudinary.com/dnmz1rjbe/image/upload/v1785239355/pctt-skills/05/e07uieddy0q9neu3rhbv.jpg",
         "caption": "Những việc ko nên làm để an toàn khi có lũ quét"
       },
       {
-        "url": "/media/pctt-images/gbs2u8kkjtvp61bwbuy5.jpg",
+        "url": "https://res.cloudinary.com/dnmz1rjbe/image/upload/v1785239356/pctt-skills/05/gbs2u8kkjtvp61bwbuy5.jpg",
         "caption": "Chúng mình phải làm gì để an toàn khi có lũ quét"
       }
     ]
@@ -194,19 +194,19 @@ const PCTT_SKILLS = [
     ],
     "images": [
       {
-        "url": "/media/pctt-images/tkb2axzeqemsaojbqgho.jpg",
+        "url": "https://res.cloudinary.com/dnmz1rjbe/image/upload/v1785239357/pctt-skills/06/tkb2axzeqemsaojbqgho.jpg",
         "caption": "Nguyên nhân dâu hiệu nhận biết sạt lở đất"
       },
       {
-        "url": "/media/pctt-images/h7nwcg7mtnmbtjacfhva.jpg",
+        "url": "https://res.cloudinary.com/dnmz1rjbe/image/upload/v1785239359/pctt-skills/06/h7nwcg7mtnmbtjacfhva.jpg",
         "caption": "Sạt lở đất những việc nên làm để đảm bảo an toàn"
       },
       {
-        "url": "/media/pctt-images/rpnbjzvearyylkfpyu8m.jpg",
+        "url": "https://res.cloudinary.com/dnmz1rjbe/image/upload/v1785239360/pctt-skills/06/rpnbjzvearyylkfpyu8m.jpg",
         "caption": "Sạt lở đất những việc ko nên làm để đảm bảo an toàn"
       },
       {
-        "url": "/media/pctt-images/tlabpczqjsmmwobo0hsp.jpg",
+        "url": "https://res.cloudinary.com/dnmz1rjbe/image/upload/v1785239361/pctt-skills/06/tlabpczqjsmmwobo0hsp.jpg",
         "caption": "Chúng mình phải làm gì để đảm bảo AT khi có sạt lở đất"
       }
     ]
@@ -218,11 +218,11 @@ const PCTT_SKILLS = [
     "videos": [],
     "images": [
       {
-        "url": "/media/pctt-images/xbzhwv2lfljj7ajythfc.jpg",
+        "url": "https://res.cloudinary.com/dnmz1rjbe/image/upload/v1785239362/pctt-skills/07/xbzhwv2lfljj7ajythfc.jpg",
         "caption": "Nguyên tắc phòng tránh dông lốc"
       },
       {
-        "url": "/media/pctt-images/j5tpfqittiwev1occtsz.jpg",
+        "url": "https://res.cloudinary.com/dnmz1rjbe/image/upload/v1785239364/pctt-skills/07/j5tpfqittiwev1occtsz.jpg",
         "caption": "HD đảm bảo an toàn khi có lốc xoáy"
       }
     ]
@@ -234,11 +234,11 @@ const PCTT_SKILLS = [
     "videos": [],
     "images": [
       {
-        "url": "/media/pctt-images/y7sqhpuya6wc9zomrrbe.jpg",
+        "url": "https://res.cloudinary.com/dnmz1rjbe/image/upload/v1785239365/pctt-skills/08/y7sqhpuya6wc9zomrrbe.jpg",
         "caption": "Mưa đá, dấu hiệu nhận biết"
       },
       {
-        "url": "/media/pctt-images/bwqmy6sjshzsfqfabi5m.jpg",
+        "url": "https://res.cloudinary.com/dnmz1rjbe/image/upload/v1785239366/pctt-skills/08/bwqmy6sjshzsfqfabi5m.jpg",
         "caption": "Những việc nên và ko nên làm khi có mưa đá"
       }
     ]
@@ -250,19 +250,19 @@ const PCTT_SKILLS = [
     "videos": [],
     "images": [
       {
-        "url": "/media/pctt-images/wtadpahgqxlg9zocgvll.jpg",
+        "url": "https://res.cloudinary.com/dnmz1rjbe/image/upload/v1785239367/pctt-skills/09/wtadpahgqxlg9zocgvll.jpg",
         "caption": "Khuyến cáo phòng bệnh khi có nắng nóng"
       },
       {
-        "url": "/media/pctt-images/cwr8jsy5xjtjnuidxqi8.jpg",
+        "url": "https://res.cloudinary.com/dnmz1rjbe/image/upload/v1785239368/pctt-skills/09/cwr8jsy5xjtjnuidxqi8.jpg",
         "caption": "Những điều cần lưu ý khi du lịch mùa nắng nóng"
       },
       {
-        "url": "/media/pctt-images/vezjxdoh7ph0iuuzjmdy.jpg",
+        "url": "https://res.cloudinary.com/dnmz1rjbe/image/upload/v1785239369/pctt-skills/09/vezjxdoh7ph0iuuzjmdy.jpg",
         "caption": "Những biện pháp cần làm khi có nắng nóng"
       },
       {
-        "url": "/media/pctt-images/zsmyqthuorgjtbsqtu8o.jpg",
+        "url": "https://res.cloudinary.com/dnmz1rjbe/image/upload/v1785239370/pctt-skills/09/zsmyqthuorgjtbsqtu8o.jpg",
         "caption": "Bảo vệ cây trồng vật nuôi khi có nắng nóng"
       }
     ]
@@ -274,15 +274,15 @@ const PCTT_SKILLS = [
     "videos": [],
     "images": [
       {
-        "url": "/media/pctt-images/v7w5qqogbrsdwzl3i2ey.jpg",
+        "url": "https://res.cloudinary.com/dnmz1rjbe/image/upload/v1785239371/pctt-skills/10/v7w5qqogbrsdwzl3i2ey.jpg",
         "caption": "Xâm nhập mặn, tác hại và biện pháp bảo vệ nguồn nước"
       },
       {
-        "url": "/media/pctt-images/z4qgdosljkai7f5fyqh4.jpg",
+        "url": "https://res.cloudinary.com/dnmz1rjbe/image/upload/v1785239372/pctt-skills/10/z4qgdosljkai7f5fyqh4.jpg",
         "caption": "Những việc cần làm ứng phso vơi XNM"
       },
       {
-        "url": "/media/pctt-images/s8wzozhmjmvmfrpiwqla.jpg",
+        "url": "https://res.cloudinary.com/dnmz1rjbe/image/upload/v1785239374/pctt-skills/10/s8wzozhmjmvmfrpiwqla.jpg",
         "caption": "Giải pháp chống xâm nhập mặn cây trồng vật nuôi"
       }
     ]
@@ -294,15 +294,15 @@ const PCTT_SKILLS = [
     "videos": [],
     "images": [
       {
-        "url": "/media/pctt-images/vatv4maocsiqjp9b9hlk.jpg",
+        "url": "https://res.cloudinary.com/dnmz1rjbe/image/upload/v1785239375/pctt-skills/11/vatv4maocsiqjp9b9hlk.jpg",
         "caption": "Hạn hán là gì, nguyên nhân tác hại và bp ứng phó"
       },
       {
-        "url": "/media/pctt-images/vfpq6zjqtfj7hrijkqom.jpg",
+        "url": "https://res.cloudinary.com/dnmz1rjbe/image/upload/v1785239376/pctt-skills/11/vfpq6zjqtfj7hrijkqom.jpg",
         "caption": "Những việc cần làm ứng phó với hạn hán"
       },
       {
-        "url": "/media/pctt-images/viqlgfr410lartjdaqrp.jpg",
+        "url": "https://res.cloudinary.com/dnmz1rjbe/image/upload/v1785239377/pctt-skills/11/viqlgfr410lartjdaqrp.jpg",
         "caption": "Biện pháp giảm thiểu thiệt hại cho cây trồng, vật nuôi"
       }
     ]
@@ -314,23 +314,23 @@ const PCTT_SKILLS = [
     "videos": [],
     "images": [
       {
-        "url": "/media/pctt-images/i4k6vaw8je2jwniajfx1.jpg",
+        "url": "https://res.cloudinary.com/dnmz1rjbe/image/upload/v1785239379/pctt-skills/12/i4k6vaw8je2jwniajfx1.jpg",
         "caption": "Cách giữ ấm trong những ngày rét đậm, rét hại"
       },
       {
-        "url": "/media/pctt-images/ltnubib23vtfk5wnsykh.jpg",
+        "url": "https://res.cloudinary.com/dnmz1rjbe/image/upload/v1785239380/pctt-skills/12/ltnubib23vtfk5wnsykh.jpg",
         "caption": "Những lưu ý khi đi du lịch mùa đông"
       },
       {
-        "url": "/media/pctt-images/hduzginss2vuntgtt7ls.jpg",
+        "url": "https://res.cloudinary.com/dnmz1rjbe/image/upload/v1785239381/pctt-skills/12/hduzginss2vuntgtt7ls.jpg",
         "caption": "Những điều cần biết để phòng tránh rét hại"
       },
       {
-        "url": "/media/pctt-images/q6yu5vhcub2u77fx5shv.jpg",
+        "url": "https://res.cloudinary.com/dnmz1rjbe/image/upload/v1785239382/pctt-skills/12/q6yu5vhcub2u77fx5shv.jpg",
         "caption": "Cách phòng chống rét đậm, rét hại cho cây trồng"
       },
       {
-        "url": "/media/pctt-images/uey3yfqfeaa0i3dtithi.jpg",
+        "url": "https://res.cloudinary.com/dnmz1rjbe/image/upload/v1785239383/pctt-skills/12/uey3yfqfeaa0i3dtithi.jpg",
         "caption": "Cách phòng chống rét đậm, rét hại cho vật nuôi"
       }
     ]
@@ -347,15 +347,15 @@ const PCTT_SKILLS = [
     ],
     "images": [
       {
-        "url": "/media/pctt-images/wz4g05g48tfhjejejpvs.jpg",
+        "url": "https://res.cloudinary.com/dnmz1rjbe/image/upload/v1785239385/pctt-skills/13/wz4g05g48tfhjejejpvs.jpg",
         "caption": "Sét là gì, nguyên nhân hình thành, dấu hiệu nhận biết"
       },
       {
-        "url": "/media/pctt-images/th8x3b16npch2tmav8fl.jpg",
+        "url": "https://res.cloudinary.com/dnmz1rjbe/image/upload/v1785239386/pctt-skills/13/th8x3b16npch2tmav8fl.jpg",
         "caption": "Các biện pháp phòng chống sét"
       },
       {
-        "url": "/media/pctt-images/zssyahswragk8ms8aib1.jpg",
+        "url": "https://res.cloudinary.com/dnmz1rjbe/image/upload/v1785239387/pctt-skills/13/zssyahswragk8ms8aib1.jpg",
         "caption": "Cách sơ cứu nạn nhân bị sét đánh"
       }
     ]
@@ -367,15 +367,15 @@ const PCTT_SKILLS = [
     "videos": [],
     "images": [
       {
-        "url": "/media/pctt-images/vtqdywilsuui1y6nvuwk.jpg",
+        "url": "https://res.cloudinary.com/dnmz1rjbe/image/upload/v1785239388/pctt-skills/14/vtqdywilsuui1y6nvuwk.jpg",
         "caption": "HD kỹ năng ứng phó với động đất, nguyên nhân, dấu hiệu nhận biết"
       },
       {
-        "url": "/media/pctt-images/c9scdq191qzpqi41gl8g.jpg",
+        "url": "https://res.cloudinary.com/dnmz1rjbe/image/upload/v1785239389/pctt-skills/14/c9scdq191qzpqi41gl8g.jpg",
         "caption": "Hướng dẫn đảm bảo an toàn khi có động đất"
       },
       {
-        "url": "/media/pctt-images/snfg6mpzqhfkbnhy0sze.jpg",
+        "url": "https://res.cloudinary.com/dnmz1rjbe/image/upload/v1785239390/pctt-skills/14/snfg6mpzqhfkbnhy0sze.jpg",
         "caption": "Hướng dẫn đảm bảo an toàn sau khi có động đất"
       }
     ]
@@ -387,7 +387,7 @@ const PCTT_SKILLS = [
     "videos": [],
     "images": [
       {
-        "url": "/media/pctt-images/bei1bj51p3oimp7vkels.jpg",
+        "url": "https://res.cloudinary.com/dnmz1rjbe/image/upload/v1785239392/pctt-skills/15/bei1bj51p3oimp7vkels.jpg",
         "caption": "Hướng dẫn đảm bảo an toàn khi có sóng thần"
       }
     ]
@@ -399,7 +399,7 @@ const PCTT_SKILLS = [
     "videos": [],
     "images": [
       {
-        "url": "/media/pctt-images/uxpkhuxeb1dkue5uokjx.jpg",
+        "url": "https://res.cloudinary.com/dnmz1rjbe/image/upload/v1785239393/pctt-skills/16/uxpkhuxeb1dkue5uokjx.jpg",
         "caption": "Hướng dẫn ứng phó với gió mạnh trên biển"
       }
     ]
@@ -411,7 +411,7 @@ const PCTT_SKILLS = [
     "videos": [],
     "images": [
       {
-        "url": "/media/pctt-images/jkjovjbrqrdvcecntaoa.jpg",
+        "url": "https://res.cloudinary.com/dnmz1rjbe/image/upload/v1785239394/pctt-skills/17/jkjovjbrqrdvcecntaoa.jpg",
         "caption": "Suong muoi, cách bảo vệ cây trồng, vật nuôi"
       }
     ]
@@ -423,7 +423,7 @@ const PCTT_SKILLS = [
     "videos": [],
     "images": [
       {
-        "url": "/media/pctt-images/bo7nwtweh6qvnwf9nlhd.jpg",
+        "url": "https://res.cloudinary.com/dnmz1rjbe/image/upload/v1785239395/pctt-skills/18/bo7nwtweh6qvnwf9nlhd.jpg",
         "caption": "HD an toàn giao thông khi có sương mù"
       }
     ]
@@ -435,7 +435,7 @@ const PCTT_SKILLS = [
     "videos": [],
     "images": [
       {
-        "url": "/media/pctt-images/en90erb6x0ohcr0gvo84.jpg",
+        "url": "https://res.cloudinary.com/dnmz1rjbe/image/upload/v1785239396/pctt-skills/19/en90erb6x0ohcr0gvo84.jpg",
         "caption": "Các biên pháp phòng chống cháy rừng"
       }
     ]
@@ -447,7 +447,7 @@ const PCTT_SKILLS = [
     "videos": [],
     "images": [
       {
-        "url": "/media/pctt-images/xuk4wnn9jplohrjyrlvu.jpg",
+        "url": "https://res.cloudinary.com/dnmz1rjbe/image/upload/v1785239399/pctt-skills/20/xuk4wnn9jplohrjyrlvu.jpg",
         "caption": "Ô nhiễm không khí và biện pháp ứng phó"
       }
     ]

@@ -1,1 +1,1 @@
-PLACEHOLDER — thay logo-thangphu.svg và banner-thangphu.svg bằng nhận diện chính thức của xã Thăng Phú trước khi lên production.
+Banner được tải từ cổng xã Thăng Phú; ward-icon.svg là icon tòa nhà tạm, thay khi có logo chính thức.

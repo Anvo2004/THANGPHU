@@ -117,7 +117,7 @@ function isConfigured() {
   return Boolean(config.evncpc.xenvnUrl);
 }
 
-// URL nguồn điện lực riêng được cấu hình bằng XENVN_URL.
+// Chỉ đọc feed XENVN_URL sau khi xác nhận đúng điện lực phụ trách Thăng Phú.
 async function fetchFromXenvn() {
   const res = await fetch(config.evncpc.xenvnUrl, {
     headers: { "User-Agent": XENVN_UA },
