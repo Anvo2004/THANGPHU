@@ -41,8 +41,9 @@ const DuLichPage = () => {
       </div>
 
       {/* Điểm nổi bật */}
+      {diemNoiBat.length > 0 && (
       <Box className="section">
-        <div className="section__title">✨ Điểm nổi bật</div>
+        <div className="section__title">✨ Cảnh quan nổi bật</div>
         <div className="tourism-highlights">
           {diemNoiBat.map((item) => (
             <button
@@ -60,10 +61,20 @@ const DuLichPage = () => {
           ))}
         </div>
       </Box>
+      )}
 
       {/* Địa điểm tham quan */}
       <Box className="section">
         <div className="section__title">📍 Địa điểm tham quan</div>
+        {diemThamQuan.length === 0 && (
+          <div className="tp-empty">
+            <b>Đang cập nhật</b>
+            <span>
+              UBND xã Thăng Phú đang tổng hợp danh sách điểm tham quan, di tích và danh thắng. Thông tin
+              sẽ hiển thị tại đây ngay khi được công bố.
+            </span>
+          </div>
+        )}
         <div className="tourism-attractions">
           {diemThamQuan.map((spot) => (
             <button

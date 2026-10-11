@@ -44,8 +44,9 @@ const VanHoaPage = () => {
       </div>
 
       {/* Hoạt động văn hóa */}
+      {hoatDong.length > 0 && (
       <Box className="section">
-        <div className="section__title">⭐ Hoạt động văn hóa</div>
+        <div className="section__title">⭐ Đời sống văn hóa</div>
         <div className="culture-activities">
           {hoatDong.map((act) => (
             <button
@@ -63,8 +64,10 @@ const VanHoaPage = () => {
           ))}
         </div>
       </Box>
+      )}
 
       {/* Di sản văn hóa được công nhận */}
+      {diSan.length > 0 && (
       <Box className="section">
         <div className="section__title">🏅 Di sản văn hóa được công nhận</div>
         <div className="heritage-list">
@@ -86,8 +89,10 @@ const VanHoaPage = () => {
           ))}
         </div>
       </Box>
+      )}
 
       {/* Điểm văn hóa - tâm linh nổi bật */}
+      {diemNoiBat.length > 0 && (
       <Box className="section">
         <div className="culture-spots-container">
           <div className="culture-spots-container__title">
@@ -110,10 +115,24 @@ const VanHoaPage = () => {
           </div>
         </div>
       </Box>
+      )}
+
+      {diSan.length === 0 && diemNoiBat.length === 0 && (
+        <Box className="section">
+          <div className="tp-empty">
+            <b>Di sản, di tích và lễ hội đang được cập nhật</b>
+            <span>
+              UBND xã đang tổng hợp danh mục di sản văn hóa, di tích và lễ hội của xã Thăng Phú. Thông tin
+              sẽ hiển thị tại đây khi được công bố.
+            </span>
+          </div>
+        </Box>
+      )}
 
       {/* Tin tức văn hóa */}
+      {tinTuc.length > 0 && (
       <Box className="section">
-        <div className="section__title">📰 Tin tức văn hóa</div>
+        <div className="section__title">📰 Tin tức văn hóa - xã hội</div>
         <div className="culture-news-list">
           {tinTuc.map((news) => {
             const clickable = Boolean(news.link);
@@ -145,6 +164,7 @@ const VanHoaPage = () => {
           })}
         </div>
       </Box>
+      )}
 
       <DetailSheet item={selected} fallbackIcon="🏯" onClose={() => setSelected(null)} />
     </Page>
