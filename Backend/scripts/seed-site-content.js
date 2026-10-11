@@ -13,7 +13,8 @@ const VanHoa = require("../src/models/VanHoa");
 const SiteInfo = require("../src/models/SiteInfo");
 
 // Nguồn: https://cttdt.danangportal.gov.vn/vi/w/xa-thang-phu
-// Dân số được công bố tại thời điểm tháng 7/2025; không suy thành số liệu 2026.
+// Dân số 17.344 người và diện tích 60,5 km²: trang "Giới thiệu chung" của cổng TTĐT xã
+// (được UBND xã chọn làm số liệu chính thức, 11/10/2026).
 // Hotline/địa chỉ UBND và Công an: theo Cổng thông tin bản đồ Đà Nẵng (xác nhận 10/10/2026).
 // Xã sáp nhập từ Bình Phú + Bình Quế (huyện Thăng Bình cũ). Thông tin chưa xác minh
 // (giờ làm việc, chủ tịch, thôn) để trống, cán bộ cập nhật qua AdminWeb.
@@ -34,7 +35,7 @@ const VILLAGES = [
   { ten: "Thôn Bình Hội", thonTruong: "Nguyễn Văn Sương", dienThoai: "0779553943" },
   { ten: "Thôn Bình Phụng", thonTruong: "Nguyễn Hữu Nhung", dienThoai: "0935937257" },
 ];
-const DAN_SO = { source: "https://cttdt.danangportal.gov.vn/vi/w/xa-thang-phu", dataAsOf: "Tháng 7/2025", tongDanSo: 17266, dienTichKm2: 60.5, soThon: 11, hoDan: null, gioiTinh: null, doTuoi: null };
+const DAN_SO = { source: "https://thangphu.danang.gov.vn/gioi-thieu/gioi-thieu-chung", dataAsOf: "Theo trang Giới thiệu chung của cổng thông tin điện tử xã", tongDanSo: 17344, dienTichKm2: 60.5, soThon: 11, hoDan: null, gioiTinh: null, doTuoi: null };
 const DU_LICH = { title: "Du lịch - Danh thắng", subtitle: "Khám phá Thăng Phú", diemNoiBat: [], diemThamQuan: [] };
 const VAN_HOA = { title: "Văn hóa - Nghệ thuật", subtitle: "Văn hóa địa phương Thăng Phú", hoatDong: [], diSan: [], diemNoiBat: [], tinTuc: [] };
 const SITE_INFO = {
