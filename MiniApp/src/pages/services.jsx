@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Page, Header } from "zmp-ui";
-import Icon from "../components/icon.jsx";
+import Icon3D from "../components/icon3d.jsx";
 import { SERVICE_CATEGORIES } from "../data/services.js";
 import API_BASE_URL from "../data/api-config.js";
 import { openExternal } from "../utils/open-external.js";
@@ -16,7 +16,7 @@ const STEPS = [
 const ServicesPage = () => {
   const navigate = useNavigate();
   const [activeCategory, setActiveCategory] = useState("all");
-  const [services, setServices] = useState([]);
+  const [services, setServices] = useState(null);
   const [portalLinks, setPortalLinks] = useState([]);
 
   useEffect(() => {
@@ -31,61 +31,56 @@ const ServicesPage = () => {
       .catch(() => setPortalLinks([]));
   }, []);
 
-  const filteredServices = services.filter(
+  const list = services || [];
+  const filteredServices = list.filter(
     (service) => activeCategory === "all" || service.type === activeCategory
   );
 
   return (
-    <Page className="page-services">
+    <Page className="page-services tp-page">
       <Header title="Dịch vụ công" />
 
-      <div className="services-hero">
-        <h1 className="services-hero__title">
-          Dịch vụ công
-          <br />
-          trực tuyến
-        </h1>
-        <p className="services-hero__desc">
-          Thủ tục hành chính xã Thăng Phú · nộp hồ sơ 24/7
-        </p>
-        <div className="services-hero__badges">
-          <div className="services-hero__badge">
-            <b className="services-hero__badge-value services-hero__badge-value--mint">
-              100%
-            </b>
-            <span className="services-hero__badge-label">Mức độ 4</span>
+      <div className="tp-subhero">
+        <div className="tp-subhero__row">
+          <Icon3D name="dich-vu-cong" size={64} className="tp-float" />
+          <div>
+            <h1 className="tp-subhero__title">Dịch vụ công trực tuyến</h1>
+            <p className="tp-subhero__desc">Thủ tục hành chính xã Thăng Phú · nộp hồ sơ 24/7</p>
           </div>
-          <div className="services-hero__badge">
-            <b className="services-hero__badge-value services-hero__badge-value--amber">
-              24/7
-            </b>
-            <span className="services-hero__badge-label">Trực tuyến</span>
+        </div>
+        <div className="tp-subhero__badges">
+          <div className="tp-badge">
+            <b className="tp-badge__value tp-badge__value--mint">100%</b>
+            <span>Mức độ 4</span>
           </div>
-          <div className="services-hero__badge">
-            <b className="services-hero__badge-value">{services.length}</b>
-            <span className="services-hero__badge-label">Nhóm dịch vụ</span>
+          <div className="tp-badge">
+            <b className="tp-badge__value tp-badge__value--gold">24/7</b>
+            <span>Trực tuyến</span>
+          </div>
+          <div className="tp-badge">
+            <b className="tp-badge__value">{list.length}</b>
+            <span>Nhóm dịch vụ</span>
           </div>
         </div>
       </div>
 
-      <div className="services-steps">
-        <div className="services-steps__head">
-          <Icon name="tips_and_updates" className="i18 amber" />
-          {STEPS.length} bước nộp hồ sơ trực tuyến
-        </div>
+      <section className="tp-steps tp-rise">
+        <h2 className="tp-steps__head">{STEPS.length} bước nộp hồ sơ trực tuyến</h2>
         {STEPS.map((step, index) => (
-          <div className="services-steps__step" key={step}>
-            <span className="services-steps__step-n">{index + 1}</span>
-            <span className="services-steps__step-t">{step}</span>
+          <div className="tp-steps__row" key={step}>
+            <span className={`tp-steps__n ${index === STEPS.length - 1 ? "is-last" : ""}`}>{index + 1}</span>
+            <span>{step}</span>
           </div>
         ))}
-      </div>
+      </section>
 
-      <div className="category-tabs">
+      <div className="tp-seg" role="tablist">
         {SERVICE_CATEGORIES.map((category) => (
           <button
             key={category.key}
             type="button"
+            role="tab"
+            aria-selected={activeCategory === category.key}
             className={activeCategory === category.key ? "is-active" : ""}
             onClick={() => setActiveCategory(category.key)}
           >
@@ -94,27 +89,22 @@ const ServicesPage = () => {
         ))}
       </div>
 
-      <div className="service-list">
-        {filteredServices.map((service) => {
+      <div className="tp-cards">
+        {services === null &&
+          [0, 1, 2, 3].map((i) => <div key={i} className="tp-card tp-skeleton tp-card--ghost" />)}
+        {filteredServices.map((service, index) => {
           const Tag = service.path ? "button" : "div";
           return (
             <Tag
               key={service._id}
               type={service.path ? "button" : undefined}
-              className="service-list__item"
+              className="tp-card tp-press tp-rise"
+              style={{ animationDelay: `${Math.min(index, 12) * 40}ms` }}
               onClick={service.path ? () => navigate(service.path) : undefined}
             >
-              <span className={`tile tile-${service.color || "b"}`}>
-                <Icon name={service.icon} className="i22" />
-              </span>
-              <h3 className="service-list__title">{service.label}</h3>
-              <span
-                className={`service-list__badge service-list__badge--${service.type}`}
-              >
-                <Icon
-                  name={service.type === "online" ? "cloud_done" : "storefront"}
-                  className="i12"
-                />
+              <Icon3D item={service} size={56} />
+              <h3 className="tp-card__title">{service.label}</h3>
+              <span className={`tp-chip tp-chip--${service.type === "online" ? "online" : "offline"}`}>
                 {service.type === "online" ? "Trực tuyến" : "Trực tiếp"}
               </span>
             </Tag>
@@ -122,38 +112,34 @@ const ServicesPage = () => {
         })}
       </div>
 
-      <div className="sec-head">
-        <span className="sec-title">
-          <Icon name="hub" className="i19 blue" />Cổng dịch vụ công
-        </span>
-      </div>
-      <div className="listcard">
-        {portalLinks.map((link) => (
-          <button
-            key={link._id}
-            type="button"
-            className="prow"
-            onClick={() =>
-              link.path ? navigate(link.path) : openExternal(link.href)
-            }
-            disabled={!link.path && !link.href}
-          >
-            <span className={`tile sm tile-${link.color || "b"}`}>
-              <Icon name={link.icon} className="i20" />
-            </span>
-            <span className="prow__body">
-              <span className="prow__title">
-                {link.label}
-                {link.badge && (
-                  <em className="prow__badge">{link.badge}</em>
-                )}
-              </span>
-              <span className="prow__desc">{link.description}</span>
-            </span>
-            <Icon name="chevron_right" className="i18 grey" />
-          </button>
-        ))}
-      </div>
+      {portalLinks.length > 0 && (
+        <section className="tp-section" aria-labelledby="tp-portal">
+          <div className="tp-section__head">
+            <h2 id="tp-portal">Cổng dịch vụ công</h2>
+          </div>
+          <div className="tp-list">
+            {portalLinks.map((link) => (
+              <button
+                key={link._id}
+                type="button"
+                className="tp-list__item tp-press"
+                onClick={() => (link.path ? navigate(link.path) : openExternal(link.href))}
+                disabled={!link.path && !link.href}
+              >
+                <Icon3D item={link} size={44} fallbackClass="i20" />
+                <span className="tp-list__body">
+                  <span className="tp-list__title">
+                    {link.label}
+                    {link.badge && <em className="tp-list__badge">{link.badge}</em>}
+                  </span>
+                  {link.description && <span className="tp-list__desc">{link.description}</span>}
+                </span>
+                <span className="tp-list__arrow" aria-hidden="true">›</span>
+              </button>
+            ))}
+          </div>
+        </section>
+      )}
     </Page>
   );
 };

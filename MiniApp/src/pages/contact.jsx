@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Page, Header } from "zmp-ui";
 import Icon from "../components/icon.jsx";
+import Icon3D from "../components/icon3d.jsx";
 import API_BASE_URL from "../data/api-config.js";
 import { openExternal } from "../utils/open-external.js";
 import logo from "../static/logo-thangphu.png";
@@ -60,175 +61,122 @@ const ContactPage = () => {
   const mapsHref = mapEmbedUrl;
 
   return (
-    <Page className="page-contact">
+    <Page className="page-contact tp-page">
       <Header title="Liên hệ" />
 
-      <div className="contact-hero">
-        <h1 className="contact-hero__title">Liên hệ &amp; Hỗ trợ</h1>
-        <p className="contact-hero__desc">
-          {c.officeName || "UBND xã Thăng Phú"} · Thành phố Đà Nẵng
-        </p>
+      <div className="tp-subhero tp-subhero--compact">
+        <h1 className="tp-subhero__title">Liên hệ</h1>
+        <p className="tp-subhero__desc">Kết nối trực tiếp với chính quyền xã</p>
       </div>
 
-      <div className="contact-card">
-        <div className="contact-card__head">
-          <div className="contact-card__crest">
-            <img src={logo} alt="Thăng Phú Số" />
+      <section className="tp-contact tp-rise">
+        <div className="tp-contact__head">
+          <div className="tp-crest tp-crest--sm">
+            <img src={logo} alt="Quốc huy Việt Nam" />
           </div>
           <div>
-            <div className="contact-card__name">{c.officeName || "UBND xã Thăng Phú"}</div>
-            {openStatus && (
-              <div
-                className={`contact-card__open ${
-                  openStatus.open ? "" : "contact-card__open--closed"
-                }`}
-              >
-                <i />
-                {openStatus.open
+            <div className="tp-contact__name">{c.officeName || "UBND xã Thăng Phú"}</div>
+            <div className="tp-contact__sub">
+              {openStatus
+                ? openStatus.open
                   ? `Đang làm việc · đến ${openStatus.closeLabel}`
-                  : "Ngoài giờ làm việc"}
-              </div>
-            )}
+                  : "Ngoài giờ làm việc"
+                : "Thành phố Đà Nẵng"}
+            </div>
           </div>
         </div>
 
-        <div className="contact-card__row">
-          <span className="tile xs tile-p">
-            <Icon name="location_on" className="i18" />
-          </span>
-          <span className="contact-card__body">
-            <div className="contact-card__key">Địa chỉ</div>
-            <div className="contact-card__value">{c.address || "Đang cập nhật"}</div>
-          </span>
+        <div className="tp-contact__row">
+          <span className="tp-contact__key">Địa chỉ</span>
+          <span className="tp-contact__value">{c.address || "Đang cập nhật"}</span>
         </div>
-
-        <div className="contact-card__row">
-          <span className="tile xs tile-b">
-            <Icon name="language" className="i18" />
-          </span>
-          <span className="contact-card__body">
-            <div className="contact-card__key">Website</div>
+        <div className="tp-contact__row">
+          <span className="tp-contact__key">Website</span>
+          {c.website ? (
             <button
               type="button"
-              className="contact-card__value contact-card__value--link"
-              disabled={!c.website}
-              onClick={() => c.website && openExternal(`https://${c.website}`)}
+              className="tp-contact__value tp-contact__value--link"
+              onClick={() => openExternal(`https://${c.website}`)}
             >
               {c.website}
             </button>
-          </span>
-          <Icon name="north_east" className="i17 grey contact-card__action" />
+          ) : (
+            <span className="tp-contact__value">Đang cập nhật</span>
+          )}
+        </div>
+        <div className="tp-contact__row">
+          <span className="tp-contact__key">Email</span>
+          <span className="tp-contact__value">{c.email || "Đang cập nhật"}</span>
+        </div>
+        <div className="tp-contact__row">
+          <span className="tp-contact__key">Giờ làm việc</span>
+          <span className="tp-contact__value tp-contact__value--pre">{c.workHours || "Đang cập nhật"}</span>
         </div>
 
-        <div className="contact-card__row">
-          <span className="tile xs tile-g">
-            <Icon name="mail" className="i18" />
-          </span>
-          <span className="contact-card__body">
-            <div className="contact-card__key">Email</div>
-            <div className="contact-card__value">{c.email || "Đang cập nhật"}</div>
-          </span>
-          <Icon name="content_copy" className="i17 grey contact-card__action" />
-        </div>
-
-        <div className="contact-card__row">
-          <span className="tile xs tile-a">
-            <Icon name="schedule" className="i18" />
-          </span>
-          <span className="contact-card__body">
-            <div className="contact-card__key">Giờ làm việc</div>
-            <div className="contact-card__value contact-card__value--pre">
-              {c.workHours || "Đang cập nhật"}
-            </div>
-          </span>
-        </div>
-
-        {c.hotline && <a className="contact-card__call" href={`tel:${c.hotline}`}>
-          <Icon name="call" className="i20" />Gọi ngay {c.hotline}
-        </a>}
-        {c.hotline2 && (
-          <a className="contact-card__call2" href={`tel:${c.hotline2}`}>
-            <Icon name="call" className="i16" />Hoặc gọi số {c.hotline2}
+        {c.hotline && (
+          <a className="tp-callbtn tp-press" href={`tel:${c.hotline.replace(/\s+/g, "")}`}>
+            <Icon name="call" className="i20" />
+            Gọi ngay {c.hotline}
           </a>
         )}
-      </div>
+        {c.hotline2 && (
+          <a className="tp-callbtn tp-callbtn--ghost tp-press" href={`tel:${c.hotline2.replace(/\s+/g, "")}`}>
+            <Icon name="call" className="i16" />
+            Hoặc gọi số {c.hotline2}
+          </a>
+        )}
+      </section>
 
       {c.policeStation?.address && (
-        <div className="listcard">
-          <div className="contact-card__row" style={{ paddingTop: 4 }}>
-            <span className="tile xs tile-b">
-              <Icon name="local_police" className="i18" />
+        <section className="tp-contact tp-contact--police">
+          <div className="tp-contact__head">
+            <span className="tp-shield" aria-hidden="true">
+              <Icon name="local_police" className="i22" />
             </span>
-            <span className="contact-card__body">
-              <div className="contact-card__key">
-                {c.policeStation.name || "Công an xã"}
-              </div>
-              <div className="contact-card__value">
-                {c.policeStation.address}
-              </div>
-            </span>
+            <div>
+              <div className="tp-contact__name">{c.policeStation.name || "Công an xã"}</div>
+              <div className="tp-contact__sub">{c.policeStation.address}</div>
+            </div>
           </div>
           {c.policeStation.phone && (
             <a
-              className="contact-card__row"
-              style={{
-                paddingBottom: 4,
-                textDecoration: "none",
-                color: "inherit",
-              }}
-              href={`tel:${c.policeStation.phone}`}
+              className="tp-hotline tp-press"
+              href={`tel:${c.policeStation.phone.replace(/\s+/g, "")}`}
             >
-              <span className="tile xs tile-p">
-                <Icon name="call" className="i18" />
+              <span>
+                <small>Điện thoại trực ban</small>
+                <b>{c.policeStation.phone}</b>
               </span>
-              <span className="contact-card__body">
-                <div className="contact-card__key">Điện thoại trực ban</div>
-                <div className="contact-card__value">
-                  {c.policeStation.phone}
-                </div>
+              <span className="tp-hotline__call" aria-hidden="true">
+                <Icon name="call" className="i20" />
               </span>
-              <Icon name="call" className="i17 green contact-card__action" />
             </a>
           )}
-        </div>
+        </section>
       )}
 
-      <div className="sec-head">
-        <span className="sec-title">
-          <Icon name="support_agent" className="i19 green" />Kênh hỗ trợ nhanh
-        </span>
-      </div>
-      <div className="service-list">
-        <div className="service-list__item">
-          <span className="tile tile-b">
-            <Icon name="forum" className="i21" />
-          </span>
-          <h3 className="service-list__title">Zalo OA</h3>
-          <p className="service-list__desc">Chat trực tiếp với cán bộ xã</p>
+      <section className="tp-section" aria-labelledby="tp-hotro">
+        <div className="tp-section__head">
+          <h2 id="tp-hotro">Kênh hỗ trợ nhanh</h2>
         </div>
-        <button
-          type="button"
-          className="service-list__item"
-          onClick={() => navigate("/phan-anh")}
-        >
-          <span className="tile tile-o">
-            <Icon name="campaign" className="i21" />
-          </span>
-          <h3 className="service-list__title">Gửi phản ánh</h3>
-          <p className="service-list__desc">Kèm ảnh, vị trí hiện tại</p>
-        </button>
-        <button
-          type="button"
-          className="service-list__item"
-          onClick={() => navigate("/tro-ly-so")}
-        >
-          <span className="tile tile-v">
-            <Icon name="smart_toy" className="i21" />
-          </span>
-          <h3 className="service-list__title">Hỏi đáp AI</h3>
-          <p className="service-list__desc">Giải đáp thủ tục 24/7</p>
-        </button>
-      </div>
+        <div className="tp-cards tp-cards--three">
+          <div className="tp-card tp-card--static">
+            <Icon3D name="thong-bao" size={48} />
+            <h3 className="tp-card__title">Zalo OA</h3>
+            <p className="tp-card__desc">Chat trực tiếp với cán bộ xã</p>
+          </div>
+          <button type="button" className="tp-card tp-press" onClick={() => navigate("/phan-anh")}>
+            <Icon3D name="phan-anh" size={48} />
+            <h3 className="tp-card__title">Gửi phản ánh</h3>
+            <p className="tp-card__desc">Kèm ảnh, vị trí hiện tại</p>
+          </button>
+          <button type="button" className="tp-card tp-press" onClick={() => navigate("/tro-ly-so")}>
+            <Icon3D name="tro-ly-ai" size={48} />
+            <h3 className="tp-card__title">Hỏi đáp AI</h3>
+            <p className="tp-card__desc">Giải đáp thủ tục 24/7</p>
+          </button>
+        </div>
+      </section>
 
       <div className="mapcard">
         <div className="mapcard__img">

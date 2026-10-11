@@ -11,6 +11,7 @@ import {
 } from "zmp-sdk/apis";
 import API_BASE_URL from "../data/api-config.js";
 import logo from "../static/logo-thangphu.png";
+import Icon3D from "../components/icon3d.jsx";
 import {
   clearPendingReferral,
   fetchProgram,
@@ -201,8 +202,8 @@ const CitizenPage = () => {
 
   if (loading) {
     return (
-      <Page className="page-citizen">
-        <Header title="Cá nhân" />
+      <Page className="page-citizen tp-page">
+        <Header title="Công dân số" />
         <div className="citizen-state">Đang tải thông tin…</div>
       </Page>
     );
@@ -210,8 +211,8 @@ const CitizenPage = () => {
 
   if (!citizen) {
     return (
-      <Page className="page-citizen">
-        <Header title="Cá nhân" />
+      <Page className="page-citizen tp-page">
+        <Header title="Công dân số" />
         <div className="citizen-state">
           <img className="citizen-state__logo" src={logo} alt="Thăng Phú Số" />
           <p>{error || "Cần liên kết tài khoản Zalo để dùng tab Công dân."}</p>
@@ -224,113 +225,138 @@ const CitizenPage = () => {
   }
 
   return (
-    <Page className="page-citizen">
-      <Header title="Cá nhân" subTitle="Quản lý thông tin và điểm thưởng" />
+    <Page className="page-citizen tp-page">
+      <Header title="Công dân số" />
 
-      <div className="citizen-card">
-        <div className="citizen-card__avatar">
-          {citizen.avatar ? <img src={citizen.avatar} alt="" /> : <img src={logo} alt="" />}
+      <section className="tp-profile tp-rise">
+        <div className="tp-profile__top">
+          <div className="tp-avatar">
+            <img src={citizen.avatar || logo} alt="" />
+          </div>
+          <div className="tp-profile__id">
+            <h1 className="tp-profile__name">{citizen.displayName || "Công dân"}</h1>
+            <button type="button" className="tp-profile__village" onClick={openVillages}>
+              Địa phương: {citizen.village ? citizen.village.name : "Chưa chọn thôn/tổ"}
+              <span aria-hidden="true"> ✎</span>
+            </button>
+            {citizen.phone && <span className="tp-profile__phone">SĐT: {citizen.phone}</span>}
+          </div>
         </div>
-        <div className="citizen-card__name">{citizen.displayName || "Công dân"}</div>
-        <div className="citizen-card__meta">ID: {citizen.zaloUserId}</div>
-        {citizen.phone && <div className="citizen-card__meta">SĐT: {citizen.phone}</div>}
-        <button type="button" className="citizen-card__village" onClick={openVillages}>
-          Địa phương: {citizen.village ? citizen.village.name : "Chưa chọn thôn/tổ"} <span aria-hidden>✏️</span>
+
+        <button type="button" className="tp-rank" onClick={() => navigate("/tich-diem")}>
+          <Icon3D name="tich-diem" size={54} />
+          <span className="tp-rank__body">
+            <span className="tp-rank__row">
+              <b>Hạng {citizen.tier ? citizen.tier.name : "chưa xếp"}</b>
+              <span>
+                <strong>{citizen.points}</strong> điểm
+              </span>
+            </span>
+            <span className="tp-rank__bar">
+              <i style={{ width: `${citizen.progress}%` }} />
+            </span>
+            <span className="tp-rank__hint">
+              {citizen.nextTier
+                ? `Cần ${citizen.pointsNeeded} điểm nữa để lên ${citizen.nextTier.name}`
+                : "Bạn đã đạt hạng cao nhất"}
+            </span>
+          </span>
         </button>
-        <button type="button" className="citizen-chip" onClick={() => navigate("/tich-diem")}>
-          {citizen.tier ? citizen.tier.name : "Chưa xếp hạng"} · {citizen.points} điểm
-        </button>
-      </div>
+      </section>
 
       {oaId && (
-        <div className={`citizen-oa ${citizen.followedOA ? "is-followed" : ""}`}>
-          <div className="citizen-oa__body">
-            <div className="citizen-oa__title">
-              {citizen.followedOA ? "Đã quan tâm Zalo OA" : "Chưa quan tâm Zalo OA"}
-            </div>
-            <div className="citizen-oa__desc">
+        <section className={`tp-oastate tp-rise ${citizen.followedOA ? "is-on" : ""}`}>
+          <Icon3D name="thong-bao" size={44} className="tp-float" />
+          <div className="tp-oastate__body">
+            <strong>{citizen.followedOA ? "Đã quan tâm Zalo OA" : "Chưa quan tâm Zalo OA"}</strong>
+            <span>
               {citizen.followedOA
-                ? "Bạn đang theo dõi Zalo OA UBND xã Thăng Phú để nhận tin chỉ đạo & TTHC."
-                : "Quan tâm Zalo OA để nhận tin chỉ đạo, thông báo và kết quả xử lý phản ánh."}
-            </div>
+                ? "Nhận tin chỉ đạo & TTHC từ UBND xã"
+                : "Quan tâm để nhận tin chỉ đạo, thông báo và kết quả phản ánh"}
+            </span>
           </div>
-          <button type="button" className="citizen-oa__btn" onClick={toggleFollow}>
+          <button type="button" className="tp-oastate__btn tp-press" onClick={toggleFollow}>
             {citizen.followedOA ? "Bỏ quan tâm" : "Quan tâm"}
           </button>
-        </div>
+        </section>
       )}
 
-      <div className="citizen-code" onClick={copyCode} role="button" tabIndex={0}>
-        <div className="citizen-code__label">Mã giới thiệu của tôi</div>
-        <div className="citizen-code__value">{citizen.referralCode}</div>
-      </div>
+      <section className="tp-code tp-rise">
+        <div className="tp-code__body">
+          <span className="tp-code__label">Mã giới thiệu của tôi</span>
+          <strong className="tp-code__value">{citizen.referralCode}</strong>
+        </div>
+        <button type="button" className="tp-code__btn tp-press" onClick={copyCode}>
+          Sao chép
+        </button>
+      </section>
 
-      <div className="citizen-menu">
-        <button type="button" className="citizen-menu__item" onClick={() => navigate("/tich-diem")}>
-          <span className="citizen-menu__icon">🏅</span>
-          <span className="citizen-menu__text">
+      <section className="tp-menu tp-rise">
+        <button type="button" className="tp-menu__item tp-press" onClick={() => navigate("/tich-diem")}>
+          <Icon3D name="tich-diem" size={44} />
+          <span className="tp-menu__text">
             <b>Tích điểm công dân</b>
             <small>
               {citizen.points} điểm
               {citizen.nextTier ? ` · cần ${citizen.pointsNeeded} điểm để lên ${citizen.nextTier.name}` : ""}
             </small>
           </span>
-          <span className="citizen-menu__arrow">›</span>
+          <span className="tp-menu__arrow" aria-hidden="true">›</span>
         </button>
-        <button type="button" className="citizen-menu__item" onClick={share}>
-          <span className="citizen-menu__icon">📤</span>
-          <span className="citizen-menu__text">
+        <button type="button" className="tp-menu__item tp-press" onClick={share}>
+          <Icon3D name="chia-se" size={44} />
+          <span className="tp-menu__text">
             <b>Chia sẻ Mini App</b>
             <small>Mời bạn bè và nhận thêm +{referrerPoints} điểm</small>
           </span>
-          <span className="citizen-menu__arrow">›</span>
+          <span className="tp-menu__arrow" aria-hidden="true">›</span>
         </button>
         <button
           type="button"
-          className="citizen-menu__item"
+          className="tp-menu__item tp-press"
           onClick={() => {
             setReferralError("");
             setReferralSheet(true);
           }}
         >
-          <span className="citizen-menu__icon">🎁</span>
-          <span className="citizen-menu__text">
-            <b>Nhập mã giới thiệu ứng dụng</b>
+          <Icon3D name="tao-qr" size={44} />
+          <span className="tp-menu__text">
+            <b>Nhập mã giới thiệu</b>
             <small>{citizen.referredBy ? "Bạn đã nhập mã giới thiệu" : "Nhận điểm thưởng từ bạn bè"}</small>
           </span>
-          <span className="citizen-menu__arrow">›</span>
+          <span className="tp-menu__arrow" aria-hidden="true">›</span>
         </button>
-        <button type="button" className="citizen-menu__item" onClick={() => navigate("/phan-anh-cua-toi")}>
-          <span className="citizen-menu__icon">📣</span>
-          <span className="citizen-menu__text">
+        <button type="button" className="tp-menu__item tp-press" onClick={() => navigate("/phan-anh-cua-toi")}>
+          <Icon3D name="phan-anh" size={44} />
+          <span className="tp-menu__text">
             <b>Phản ánh của bạn</b>
             <small>Theo dõi kết quả xử lý</small>
           </span>
-          <span className="citizen-menu__arrow">›</span>
+          <span className="tp-menu__arrow" aria-hidden="true">›</span>
         </button>
-        <button type="button" className="citizen-menu__item" onClick={pin}>
-          <span className="citizen-menu__icon">📌</span>
-          <span className="citizen-menu__text">
+        <button type="button" className="tp-menu__item tp-press" onClick={pin}>
+          <Icon3D name="ban-do" size={44} />
+          <span className="tp-menu__text">
             <b>Ghim ứng dụng ra màn hình</b>
             <small>Mở nhanh Thăng Phú Số từ màn hình chính</small>
           </span>
-          <span className="citizen-menu__arrow">›</span>
+          <span className="tp-menu__arrow" aria-hidden="true">›</span>
         </button>
         <button
           type="button"
-          className="citizen-menu__item"
+          className="tp-menu__item tp-press"
           onClick={() => navigate("/tich-diem", { state: { tab: "the-le" } })}
         >
-          <span className="citizen-menu__icon">ℹ️</span>
-          <span className="citizen-menu__text">
+          <Icon3D name="van-ban" size={44} />
+          <span className="tp-menu__text">
             <b>Giới thiệu chung</b>
             <small>Thể lệ tích điểm và quyền lợi</small>
           </span>
-          <span className="citizen-menu__arrow">›</span>
+          <span className="tp-menu__arrow" aria-hidden="true">›</span>
         </button>
-      </div>
+      </section>
 
-      <button type="button" className="citizen-btn citizen-btn--block" onClick={relink} disabled={busy}>
+      <button type="button" className="tp-relink tp-press" onClick={relink} disabled={busy}>
         ↻ Liên kết lại
       </button>
 
