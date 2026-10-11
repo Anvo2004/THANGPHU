@@ -88,6 +88,10 @@ async function checkFeedbackStatus(feedbackId) {
 
   console.log(`[CGY1022Status] Phản ánh ${feedbackId} (mã ${fb.cgy1022.gopyId}) đã có kết quả từ 1022`);
 
+  require("./citizenService")
+    .awardFeedbackResolved(claimed)
+    .catch((err) => console.error("[CGY1022Status] cộng điểm công dân thất bại:", err.message));
+
   try {
     await sendZaloText(
       claimed.userId,

@@ -35,6 +35,8 @@ module.exports = {
     // webhook vẫn nhận request bình thường, chỉ bỏ qua bước xác thực chữ ký.
     oaSecretKey: process.env.ZALO_OA_SECRET_KEY || "",
     siteVerification: process.env.ZALO_SITE_VERIFICATION || "",
+    // ID Official Account — Mini App dùng cho followOA/unfollowOA. Trống thì ẩn nút theo dõi.
+    oaId: process.env.ZALO_OA_ID || "",
   },
 
   corsOrigin: process.env.CORS_ORIGIN === "*" ? "*" : (process.env.CORS_ORIGIN || "http://localhost:5182,http://localhost:5183").split(",").map((s) => s.trim()).filter(Boolean),

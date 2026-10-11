@@ -24,6 +24,12 @@ import DanSoPage from "./pages/dan-so.jsx";
 import ThonXomPage from "./pages/thon-xom.jsx";
 import VanHoaPage from "./pages/van-hoa.jsx";
 import DuLichPage from "./pages/du-lich.jsx";
+import CitizenPage from "./pages/cong-dan.jsx";
+import TichDiemPage from "./pages/tich-diem.jsx";
+import { captureReferral } from "./data/citizen.js";
+
+// Mở từ link chia sẻ ?ref=MÃ: ghi nhớ mã để áp dụng khi công dân đăng ký lần đầu.
+captureReferral();
 
 const MyApp = () => {
   return (
@@ -43,6 +49,8 @@ const MyApp = () => {
           <AnimationRoutes>
             <Route path="/" element={<HomePage />} />
             <Route path="/tin-tuc" element={<NewsPage />} />
+            <Route path="/cong-dan" element={<CitizenPage />} />
+            <Route path="/tich-diem" element={<TichDiemPage />} />
             <Route path="/dich-vu" element={<ServicesPage />} />
             <Route path="/tro-ly-so" element={<AssistantPage />} />
             <Route path="/hien-ke" element={<IdeasPage />} />

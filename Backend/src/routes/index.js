@@ -21,12 +21,15 @@ const siteContentRoutes = require("./siteContent");
 const statsRoutes = require("./stats");
 const userRoutes = require("./users");
 const zaloMembersRoutes = require("./zaloMembers");
+const publicCitizenRoutes = require("./publicCitizen");
+const citizenRoutes = require("./citizens");
 
 const router = express.Router();
 
 // Public, unauthenticated routes (citizen-facing, called from the Zalo Mini App)
 router.use("/public", publicFeedbackRoutes);
 router.use("/public", publicLookupRoutes);
+router.use("/public/citizen", publicCitizenRoutes);
 router.use("/public/assistant", assistantRoutes);
 router.use("/auth", authRoutes);
 // Zalo gọi vào endpoint này (sự kiện rút lại đồng ý/xoá dữ liệu...) — không qua JWT admin.
@@ -38,6 +41,7 @@ router.use("/stats", statsRoutes);
 router.use("/feedbacks", feedbackRoutes);
 router.use("/users", userRoutes);
 router.use("/zalo-members", zaloMembersRoutes);
+router.use("/citizens", citizenRoutes);
 router.use("/categories", categoryRoutes);
 router.use("/broadcast", broadcastRoutes);
 router.use("/tro-cap", troCapRoutes);

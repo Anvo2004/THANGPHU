@@ -1,4 +1,5 @@
 const express = require("express");
+const citizenService = require("../services/citizenService");
 const Feedback = require("../models/Feedback");
 const AdminUser = require("../models/AdminUser");
 const Category = require("../models/Category");
@@ -145,6 +146,10 @@ router.post("/:id/approve", requireRole(...LEADER_ROLES), async (req, res) => {
   feedback.status = "resolved";
   feedback.sentAt = new Date();
   await feedback.save();
+
+  citizenService
+    .awardFeedbackResolved(feedback)
+    .catch((err) => console.error("[feedbacks] cộng điểm công dân thất bại:", err.message));
 
   sendZaloText(
     feedback.userId,

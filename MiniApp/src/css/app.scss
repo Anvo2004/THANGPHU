@@ -200,7 +200,7 @@ body {
   height: 68px;
   padding: 0 6px;
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   align-items: center;
   border-radius: 26px;
   background: rgba(255, 255, 255, 0.82);
@@ -4048,3 +4048,596 @@ body {
   font-weight: 600;
 }
 
+
+/* ===== Tab Công dân & Tích điểm ===== */
+.citizen-state {
+  padding: calc(#{$header-clearance} + 40px) 24px 24px;
+  text-align: center;
+  color: #5a6180;
+  font-size: 14px;
+
+  &__logo {
+    width: 84px;
+    height: 84px;
+    margin-bottom: 12px;
+  }
+}
+
+.page-citizen {
+  background: #f4f5f7;
+  padding-bottom: 96px;
+}
+
+.citizen-card {
+  margin: calc(#{$header-clearance} + 12px) 16px 12px;
+  padding: 20px 16px 16px;
+  border-radius: 22px;
+  background: #fff;
+  text-align: center;
+  box-shadow: 0 12px 30px -18px rgba(12, 19, 48, 0.35);
+
+  &__avatar {
+    width: 84px;
+    height: 84px;
+    margin: 0 auto 10px;
+    border-radius: 50%;
+    border: 3px solid $accent;
+    overflow: hidden;
+    background: #eef1ff;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+
+  &__name {
+    font-size: 18px;
+    font-weight: 700;
+    color: #1b2038;
+  }
+
+  &__meta {
+    margin-top: 3px;
+    font-size: 12px;
+    color: #7a819b;
+    word-break: break-all;
+  }
+
+  &__village {
+    margin-top: 6px;
+    padding: 4px 10px;
+    border: none;
+    border-radius: 10px;
+    background: #f4f6ff;
+    color: #3b4468;
+    font-family: inherit;
+    font-size: 12px;
+  }
+}
+
+.citizen-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 12px;
+  padding: 7px 16px;
+  border: none;
+  border-radius: 999px;
+  background: #e6ecff;
+  color: $accent;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.citizen-oa {
+  margin: 0 16px 12px;
+  padding: 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-radius: 18px;
+  background: #fff7e6;
+  border: 1px solid #ffe2a8;
+
+  &.is-followed {
+    background: #e9f9ef;
+    border-color: #bde8cb;
+  }
+
+  &__body {
+    flex: 1;
+    min-width: 0;
+  }
+  &__title {
+    font-size: 13px;
+    font-weight: 700;
+    color: #1b2038;
+  }
+  &__desc {
+    margin-top: 2px;
+    font-size: 11.5px;
+    line-height: 1.4;
+    color: #5a6180;
+  }
+  &__btn {
+    flex-shrink: 0;
+    padding: 8px 12px;
+    border: 1px solid currentColor;
+    border-radius: 12px;
+    background: #fff;
+    color: #d93a3a;
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 700;
+  }
+  &:not(.is-followed) &__btn {
+    color: $accent;
+  }
+}
+
+.citizen-code {
+  margin: 0 16px 12px;
+  padding: 14px;
+  border-radius: 18px;
+  background: #fff;
+  text-align: center;
+
+  &__label {
+    font-size: 12px;
+    color: #7a819b;
+  }
+  &__value {
+    margin-top: 4px;
+    font-size: 26px;
+    font-weight: 800;
+    letter-spacing: 4px;
+    color: $accent;
+  }
+}
+
+.citizen-menu {
+  margin: 0 16px 14px;
+  border-radius: 18px;
+  background: #fff;
+  overflow: hidden;
+
+  &__item {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 13px 14px;
+    border: none;
+    border-bottom: 1px solid #eef0f6;
+    background: #fff;
+    text-align: left;
+    font-family: inherit;
+
+    &:last-child {
+      border-bottom: none;
+    }
+  }
+  &__icon {
+    width: 36px;
+    height: 36px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    background: #eef2ff;
+    font-size: 17px;
+  }
+  &__text {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+
+    b {
+      font-size: 13.5px;
+      color: #1b2038;
+    }
+    small {
+      font-size: 11.5px;
+      color: #7a819b;
+    }
+  }
+  &__arrow {
+    font-size: 20px;
+    color: #b6bbd0;
+  }
+}
+
+.citizen-btn {
+  padding: 11px 20px;
+  border: none;
+  border-radius: 14px;
+  background: $gradient-brand;
+  color: #fff;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 700;
+
+  &:disabled {
+    opacity: 0.55;
+  }
+  &--block {
+    display: block;
+    width: calc(100% - 32px);
+    margin: 0 16px;
+  }
+  &--ghost {
+    background: #e8efff;
+    color: $accent;
+  }
+}
+
+.citizen-toast {
+  position: fixed;
+  left: 50%;
+  bottom: calc(100px + var(--zaui-safe-area-inset-bottom, 0px));
+  transform: translateX(-50%);
+  z-index: 30;
+  max-width: 82%;
+  padding: 10px 16px;
+  border-radius: 14px;
+  background: rgba(12, 19, 48, 0.9);
+  color: #fff;
+  font-size: 13px;
+  text-align: center;
+}
+
+.citizen-sheet {
+  padding: 18px 16px 24px;
+
+  &__title {
+    font-size: 17px;
+    font-weight: 700;
+    color: #1b2038;
+  }
+  &__desc {
+    margin: 6px 0 14px;
+    font-size: 12.5px;
+    color: #7a819b;
+  }
+  &__empty {
+    padding: 18px 0;
+    text-align: center;
+    font-size: 13px;
+    color: #7a819b;
+  }
+  &__error {
+    margin-top: 8px;
+    font-size: 12.5px;
+    color: #d93a3a;
+  }
+  &__list {
+    max-height: 52vh;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  &__option {
+    padding: 12px 14px;
+    border: 1px solid #e2e6f3;
+    border-radius: 12px;
+    background: #fff;
+    text-align: left;
+    font-family: inherit;
+    font-size: 14px;
+    color: #1b2038;
+
+    &.is-active {
+      border-color: $accent;
+      background: #eef2ff;
+      font-weight: 700;
+    }
+  }
+  &__actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 14px;
+
+    .citizen-btn {
+      flex: 1;
+    }
+  }
+}
+
+.citizen-input {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid #d5dbef;
+  border-radius: 12px;
+  font-family: inherit;
+  font-size: 15px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+/* Trang Tích điểm công dân */
+.points-card {
+  margin: calc(#{$header-clearance} + 12px) 16px 12px;
+  padding: 16px;
+  border-radius: 22px;
+  background: #fff;
+  box-shadow: 0 12px 30px -18px rgba(12, 19, 48, 0.35);
+
+  &__top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+  &__label {
+    font-size: 12px;
+    color: #7a819b;
+  }
+  &__value {
+    font-size: 40px;
+    font-weight: 800;
+    line-height: 1.15;
+    color: $accent;
+
+    span {
+      font-size: 14px;
+      font-weight: 500;
+      color: #7a819b;
+    }
+  }
+  &__tier {
+    display: inline-block;
+    margin-top: 4px;
+    padding: 4px 12px;
+    border-radius: 999px;
+    background: #e6ecff;
+    color: $accent;
+    font-size: 11px;
+    font-weight: 700;
+  }
+  &__avatar {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    border: 2px solid $accent;
+    object-fit: cover;
+  }
+  &__progress-head {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 16px;
+    font-size: 12px;
+    color: #3b4468;
+  }
+  &__bar {
+    height: 8px;
+    margin-top: 6px;
+    border-radius: 8px;
+    background: #eef0f6;
+    overflow: hidden;
+
+    i {
+      display: block;
+      height: 100%;
+      border-radius: 8px;
+      background: linear-gradient(90deg, #ffb020, #ff8a00);
+    }
+  }
+  &__hint {
+    margin-top: 6px;
+    font-size: 11.5px;
+    color: #7a819b;
+  }
+}
+
+.points-tabs {
+  margin: 0 16px 12px;
+  padding: 4px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 4px;
+  border-radius: 16px;
+  background: #e8ebf5;
+
+  &__item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    padding: 8px 4px;
+    border: none;
+    border-radius: 12px;
+    background: transparent;
+    font-family: inherit;
+    font-size: 11.5px;
+    font-weight: 600;
+    color: #7a819b;
+
+    &.is-active {
+      background: #fff;
+      color: $accent;
+    }
+  }
+}
+
+.points-panel {
+  margin: 0 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.points-empty {
+  padding: 28px 12px;
+  border-radius: 16px;
+  background: #fff;
+  text-align: center;
+  font-size: 13px;
+  color: #7a819b;
+}
+
+.points-log {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px;
+  border-radius: 16px;
+  background: #fff;
+
+  &__dot {
+    width: 26px;
+    height: 26px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: #e3f8ec;
+    color: #1f9d55;
+    font-size: 13px;
+    font-weight: 800;
+  }
+  &__body {
+    flex: 1;
+    min-width: 0;
+  }
+  &__title {
+    font-size: 13px;
+    font-weight: 700;
+    color: #1b2038;
+  }
+  &__time {
+    margin-top: 2px;
+    font-size: 11px;
+    color: #9aa1b8;
+  }
+  &__pts {
+    font-size: 14px;
+    font-weight: 800;
+    color: #1f9d55;
+
+    &.is-neg {
+      color: #d93a3a;
+    }
+  }
+}
+
+.points-section {
+  padding: 14px;
+  border-radius: 18px;
+  background: #fff;
+
+  h3 {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0 0 8px;
+    font-size: 14.5px;
+    color: #1b2038;
+
+    i {
+      width: 26px;
+      height: 26px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 9px;
+      background: #e6ecff;
+      color: $accent;
+      font-size: 11px;
+      font-style: normal;
+      font-weight: 800;
+    }
+  }
+  p {
+    margin: 0 0 10px;
+    font-size: 12.5px;
+    line-height: 1.5;
+    color: #5a6180;
+  }
+}
+
+.points-rule {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 8px;
+  padding: 10px;
+  border-radius: 14px;
+  background: #f6f7fb;
+
+  &__no {
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: #e6ecff;
+    color: $accent;
+    font-size: 11px;
+    font-weight: 800;
+  }
+  &__body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+
+    b {
+      font-size: 13px;
+      color: #1b2038;
+    }
+    small {
+      font-size: 11px;
+      color: #7a819b;
+    }
+  }
+  &__pts {
+    padding: 3px 9px;
+    border-radius: 8px;
+    background: #e3f8ec;
+    color: #1f9d55;
+    font-size: 11.5px;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+}
+
+.points-tier {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 8px;
+  padding: 11px 12px;
+  border-radius: 12px;
+  background: #f6f7fb;
+  font-size: 13px;
+
+  b {
+    color: #1b2038;
+  }
+  span {
+    color: #7a819b;
+  }
+}
+
+.points-benefit {
+  margin-top: 10px;
+
+  b {
+    font-size: 13px;
+    color: #1b2038;
+  }
+  ul {
+    margin: 6px 0 0;
+    padding-left: 18px;
+    font-size: 12.5px;
+    line-height: 1.5;
+    color: #5a6180;
+  }
+}

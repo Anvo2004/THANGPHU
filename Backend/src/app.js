@@ -27,6 +27,9 @@ app.use("/media", express.static(config.mediaDir));
 // express.static hỗ trợ Range request nên video mp4 phát/tua được khi mở link.
 app.use("/images", express.static(path.join(__dirname, "..", "public", "images")));
 
+// Logo thương hiệu (nằm trong git) — dùng làm ảnh thu nhỏ khi chia sẻ Mini App qua Zalo.
+app.use("/brand", express.static(path.join(__dirname, "..", "public", "brand")));
+
 app.get("/health", (req, res) => res.json({ error: 0, message: "ok" }));
 app.post("/health", (req, res) => res.json({ error: 0, message: "ok" }));
 app.get("/", (req, res) => res.send(`

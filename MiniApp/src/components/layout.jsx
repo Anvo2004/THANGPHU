@@ -10,6 +10,7 @@ const TABS = [
   { key: "/", label: "Trang chủ", icon: "home" },
   { key: "/dich-vu", label: "Dịch vụ", icon: "grid_view" },
   { key: "/lien-he", label: "Liên hệ", icon: "call" },
+  { key: "/cong-dan", label: "Công dân", icon: "badge", also: ["/tich-diem"] },
 ];
 
 // Nav tự viết thay zmp-ui BottomNavigation — cần kiểu "icon active nằm trong
@@ -24,7 +25,7 @@ const Layout = ({ children }) => {
       <div className="layout__content">{children}</div>
       <nav className="bottom-nav">
         {TABS.map((tab) => {
-          const active = location.pathname === tab.key;
+          const active = location.pathname === tab.key || (tab.also || []).includes(location.pathname);
           return (
             <button
               key={tab.key}
