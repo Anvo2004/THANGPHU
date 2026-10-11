@@ -62,7 +62,7 @@ jobs:
         working-directory: Backend
         run: |
           npm ci --no-audit --no-fund
-          node --test
+          npm test
 
       - name: Build MiniApp
         working-directory: MiniApp

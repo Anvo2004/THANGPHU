@@ -1,5 +1,6 @@
 // Kiểm thử tích hợp luồng Công dân trên một database TẠM rồi xoá — không đụng DB thật.
-// Chạy: node scripts/_citizen_integration_test.js
+// Cần MONGO_URI thật; KHÔNG nằm trong `npm test` (tên file cố ý không kết thúc _test.js).
+// Chạy: node scripts/citizen-integration-check.js
 const assert = require("node:assert/strict");
 const mongoose = require("mongoose");
 const config = require("../src/config");
