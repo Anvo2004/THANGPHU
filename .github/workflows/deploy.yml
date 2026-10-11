@@ -1,10 +1,20 @@
 name: Deploy Thang Phu Mini App
 
-# Chỉ chạy thủ công (Actions → Run workflow). Build trên GitHub runner, chỉ đẩy kết quả
-# lên VPS dùng chung: không chạy npm/vite trên VPS ngoài `npm ci --omit=dev` của Backend.
-# Cấu hình cần có xem deploy/vps/README.md và docs/SETUP_CHECKLIST.md (mục 8).
+# Tự chạy khi push lên main (chỉ khi đổi mã nguồn chạy trên VPS) và vẫn bấm tay được
+# (Actions → Run workflow). Build trên GitHub runner, chỉ đẩy kết quả lên VPS dùng
+# chung: không chạy npm/vite trên VPS ngoài `npm ci --omit=dev` của Backend.
+# Tắt khẩn cấp: đặt biến DEPLOY_ENABLED khác "true". Cấu hình cần có xem
+# deploy/vps/README.md và docs/SETUP_CHECKLIST.md (mục 8).
 on:
   workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "Backend/**"
+      - "Frontend/AdminWeb/**"
+      - "MiniApp/**"
+      - "ecosystem.config.cjs"
+      - ".github/workflows/deploy.yml"
 
 concurrency:
   group: thangphu-deploy
