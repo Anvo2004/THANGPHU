@@ -160,10 +160,12 @@ const CitizenPage = () => {
     try {
       if (citizen.followedOA) {
         await unfollowOA({ id: oaId });
+        try { localStorage.removeItem("thangphu_oa_followed"); } catch { /* bỏ qua */ }
         const data = await updateProfile({ followedOA: false });
         setCitizen(data.citizen);
       } else {
         await followOA({ id: oaId });
+        try { localStorage.setItem("thangphu_oa_followed", "1"); } catch { /* bỏ qua */ }
         const data = await updateProfile({ followedOA: true });
         setCitizen(data.citizen);
         notify("Đã quan tâm Zalo OA");
