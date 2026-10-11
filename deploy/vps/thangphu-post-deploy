@@ -1,0 +1,12 @@
+#!/bin/bash
+# Chạy trên VPS sau khi GitHub Actions rsync xong: cài dependency Backend và reload PM2.
+set -euo pipefail
+export PATH="/usr/local/bin:/usr/bin:/bin:$PATH"
+cd /var/www/thangphu/Backend
+npm ci --omit=dev --no-audit --no-fund 2>&1 | tail -3
+pm2 startOrReload /var/www/thangphu/ecosystem.config.cjs --update-env
+pm2 save >/dev/null
+sleep 6
+curl -fsS http://127.0.0.1:4012/health
+echo
+echo "thangphu-post-deploy: OK"

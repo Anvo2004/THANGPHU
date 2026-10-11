@@ -1,0 +1,25 @@
+#!/bin/bash
+# Forced command cho khoá SSH của GitHub Actions (Thăng Phú) trong /root/.ssh/authorized_keys.
+# Khoá này CHỈ được: (1) rsync vào /var/www/thangphu, (2) chạy thangphu-post-deploy.
+set -u
+cmd="${SSH_ORIGINAL_COMMAND:-}"
+deny() { echo "thangphu-deploy-gate: không được phép" >&2; exit 126; }
+
+case "$cmd" in
+  thangphu-deploy)
+    exec /usr/local/bin/thangphu-post-deploy ;;
+  "rsync --server "*)
+    [[ "$cmd" =~ ^[A-Za-z0-9\ ._/=:,+@-]+$ ]] || deny
+    [[ "$cmd" == *..* ]] && deny
+    case "$cmd" in
+      *--rsync-path*|*--daemon*|*--backup-dir*|*--files-from*|*--temp-dir*|*--compare-dest*|*--copy-dest*|*--link-dest*|*--log-file*|*--config*|*-batch*|*--partial-dir*) deny ;;
+    esac
+    last="${cmd##* }"
+    case "$last" in
+      /var/www/thangphu|/var/www/thangphu/*) ;;
+      *) deny ;;
+    esac
+    read -r -a argv <<<"$cmd"
+    exec "${argv[@]}" ;;
+  *) deny ;;
+esac

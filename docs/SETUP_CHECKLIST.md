@@ -102,15 +102,21 @@ Các tích hợp này chưa được gọi tới hệ thống thật. Giữ tr�
 
 ## 8. VPS, Docker và GitHub
 
-- [x] Đã xác định repository riêng [Anvo2004/THANGPHU](https://github.com/Anvo2004/THANGPHU), nhánh `main`; không mang lịch sử Git của Trà Liên.
-- [ ] VPS, user SSH, đường dẫn dự án riêng có tên thư mục cuối là `thangphu` (ví dụ `/var/www/thangphu`), Node.js, Nginx, PM2, SSL.
-- [ ] Khởi tạo PM2 process `thangphu` (MiniApp preview nếu dùng) và `thangphu-backend`; workflow chỉ restart process đã có. Nếu chọn Docker thì vận hành bằng Compose, workflow PM2 không dùng cho cách triển khai này.
-- [ ] Nginx AdminWeb trỏ tới `Frontend/AdminWeb/www`; cấu hình API, media, HTTPS và giới hạn upload phù hợp.
-- [ ] `.env` gốc cho Compose: `BACKEND_PORT`, `ADMIN_PORT`, `MINIAPP_PORT`, `VITE_API_URL_ADMIN`, `VITE_API_URL_MINIAPP`, `APP_ID`, `VITE_MAP_LAT`, `VITE_MAP_LNG`. Đây là cấu hình riêng của Compose, không tự đọc frontend `.env` vì chúng bị loại khỏi Docker build context.
+- [x] Repository riêng [Anvo2004/THANGPHU](https://github.com/Anvo2004/THANGPHU), nhánh `main`.
+- [x] VPS dùng chung 123.30.48.104: code tại `/var/www/thangphu`, PM2 `thangphu-backend` cổng 4012, nginx `thangphuapi` / `thangphuadmin` / `thangphu` (HTTPS Let's Encrypt).
+- [x] Khóa deploy riêng đã cài (forced command `thangphu-deploy-gate`, xem `deploy/vps/README.md`): chỉ rsync vào `/var/www/thangphu` và chạy `thangphu-deploy`.
+- [x] PM2 dùng `ecosystem.config.cjs` (giữ `NODE_EXTRA_CA_CERTS` cho cổng xã thiếu chứng chỉ trung gian).
 
-GitHub **Secrets**: `VPS_HOST`, `VPS_DEPLOY_SSH_KEY`, `LICH_CUP_DIEN_INGEST_SECRET` (nếu dùng ingest).
+Workflow `Deploy Thang Phu Mini App` chạy **thủ công**: build MiniApp + AdminWeb trên GitHub runner, rsync lên VPS, `npm ci --omit=dev` và reload PM2 trên VPS. Không build trên VPS.
 
-GitHub **Variables**: `VPS_USERNAME`, `VPS_PROJECT_PATH`, `BACKEND_PUBLIC_URL`, `EVNCPC_ORG_CODE`, `EVNCPC_SUBORG_CODE`. Đặt `DEPLOY_ENABLED=true` khi sẵn sàng deploy, `SYNC_ENABLED=true` khi sẵn sàng chạy sync thủ công. Cả hai workflow chỉ nhận `workflow_dispatch`, không tự chạy khi push.
+GitHub **Secrets**: `VPS_DEPLOY_SSH_KEY` (private key `thangphu_deploy`), `VPS_KNOWN_HOSTS` (dòng host key của VPS).
+
+GitHub **Variables**: `DEPLOY_ENABLED=true`, `VPS_HOST`, `VPS_USERNAME`, `VPS_PROJECT_PATH=/var/www/thangphu`, `VITE_API_URL=https://thangphuapi.dxvtech.vn`, `APP_ID`; tùy chọn `VITE_MAP_LAT`, `VITE_MAP_LNG`.
+
+Workflow lịch điện (`sync-lich-cup-dien.yml`) chỉ là dự phòng thủ công; VPS đã tự cào xenvn. Bật khi cần với `SYNC_ENABLED=true`, `BACKEND_PUBLIC_URL`, `EVNCPC_ORG_CODE`, `EVNCPC_SUBORG_CODE` và secret `LICH_CUP_DIEN_INGEST_SECRET`.
+
+- [ ] Docker Compose chưa dùng trên VPS (host chưa cài Docker).
+- [ ] Xoay các bí mật đã lộ khi cấu hình (Mongo, Zalo, root VPS) và siết Atlas Access List.
 
 ## 9. Kiểm thử sau khi bổ sung
 

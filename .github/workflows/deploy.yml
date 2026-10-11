@@ -1,34 +1,97 @@
 name: Deploy Thang Phu Mini App
+
+# Chỉ chạy thủ công (Actions → Run workflow). Build trên GitHub runner, chỉ đẩy kết quả
+# lên VPS dùng chung: không chạy npm/vite trên VPS ngoài `npm ci --omit=dev` của Backend.
+# Cấu hình cần có xem deploy/vps/README.md và docs/SETUP_CHECKLIST.md (mục 8).
 on:
   workflow_dispatch:
+
+concurrency:
+  group: thangphu-deploy
+  cancel-in-progress: false
+
 jobs:
   deploy:
     if: vars.DEPLOY_ENABLED == 'true'
     runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      # Được đưa vào bundle lúc build; đổi giá trị thì phải chạy lại workflow.
+      VITE_API_URL: ${{ vars.VITE_API_URL }}
+      APP_ID: ${{ vars.APP_ID }}
+      VITE_MAP_LAT: ${{ vars.VITE_MAP_LAT }}
+      VITE_MAP_LNG: ${{ vars.VITE_MAP_LNG }}
+      DEPLOY_PATH: ${{ vars.VPS_PROJECT_PATH }}
+      DEPLOY_TARGET: ${{ vars.VPS_USERNAME }}@${{ vars.VPS_HOST }}
     steps:
-      - name: Deploy over SSH
-        uses: appleboy/ssh-action@v1.0.3
-        env:
-          DEPLOY_PATH: ${{ vars.VPS_PROJECT_PATH }}
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
         with:
-          host: ${{ secrets.VPS_HOST }}
-          username: ${{ vars.VPS_USERNAME }}
-          key: ${{ secrets.VPS_DEPLOY_SSH_KEY }}
-          envs: DEPLOY_PATH
-          script: |
-            set -e
-            test -n "$DEPLOY_PATH"
-            test "$(basename "$DEPLOY_PATH")" = "thangphu"
-            cd "$DEPLOY_PATH"
-            git pull --ff-only origin main
-            cd MiniApp
-            npm ci
-            npm run sync:app-id
-            npm run build
-            pm2 restart thangphu --update-env
-            cd ../Backend
-            npm ci --omit=dev
-            pm2 restart thangphu-backend --update-env
-            cd ../Frontend/AdminWeb
-            npm ci
-            npm run build
+          node-version: 20
+          cache: npm
+          cache-dependency-path: |
+            Backend/package-lock.json
+            MiniApp/package-lock.json
+            Frontend/AdminWeb/package-lock.json
+
+      - name: Kiểm tra cấu hình
+        env:
+          SSH_KEY: ${{ secrets.VPS_DEPLOY_SSH_KEY }}
+          KNOWN_HOSTS: ${{ secrets.VPS_KNOWN_HOSTS }}
+        run: |
+          set -e
+          for v in VITE_API_URL APP_ID DEPLOY_PATH SSH_KEY KNOWN_HOSTS; do
+            test -n "${!v}" || { echo "Thiếu cấu hình: $v"; exit 1; }
+          done
+          test "${{ vars.VPS_HOST }}" != "" && test "${{ vars.VPS_USERNAME }}" != ""
+          test "$(basename "$DEPLOY_PATH")" = "thangphu"
+          case "$VITE_API_URL" in https://*) ;; *) echo "VITE_API_URL phải là HTTPS"; exit 1 ;; esac
+
+      - name: Kiểm thử Backend
+        working-directory: Backend
+        run: |
+          npm ci --no-audit --no-fund
+          node --test
+
+      - name: Build MiniApp
+        working-directory: MiniApp
+        run: |
+          npm ci --no-audit --no-fund
+          npm run build
+
+      - name: Build AdminWeb
+        working-directory: Frontend/AdminWeb
+        run: |
+          npm ci --no-audit --no-fund
+          npm run build
+
+      - name: Cấu hình SSH
+        env:
+          SSH_KEY: ${{ secrets.VPS_DEPLOY_SSH_KEY }}
+          KNOWN_HOSTS: ${{ secrets.VPS_KNOWN_HOSTS }}
+        run: |
+          install -d -m 700 ~/.ssh
+          printf '%s\n' "$SSH_KEY" > ~/.ssh/thangphu_deploy
+          chmod 600 ~/.ssh/thangphu_deploy
+          printf '%s\n' "$KNOWN_HOSTS" > ~/.ssh/known_hosts
+
+      - name: Đẩy mã lên VPS
+        run: |
+          set -e
+          SSH="ssh -i $HOME/.ssh/thangphu_deploy -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes"
+          # Giữ nguyên .env, media, ảnh upload và node_modules trên VPS.
+          rsync -az --delete -e "$SSH" \
+            --exclude node_modules --exclude .env --exclude media --exclude public/images \
+            Backend/ "$DEPLOY_TARGET:$DEPLOY_PATH/Backend/"
+          rsync -az --delete -e "$SSH" Frontend/AdminWeb/www/ "$DEPLOY_TARGET:$DEPLOY_PATH/Frontend/AdminWeb/www/"
+          rsync -az --delete -e "$SSH" MiniApp/www/ "$DEPLOY_TARGET:$DEPLOY_PATH/MiniApp/www/"
+          rsync -az -e "$SSH" ecosystem.config.cjs "$DEPLOY_TARGET:$DEPLOY_PATH/ecosystem.config.cjs"
+
+      - name: Cài dependency Backend và reload PM2 trên VPS
+        run: |
+          ssh -i "$HOME/.ssh/thangphu_deploy" -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes \
+            "$DEPLOY_TARGET" thangphu-deploy
+
+      - name: Kiểm tra sức khỏe
+        run: curl -fsS --retry 5 --retry-delay 5 "$VITE_API_URL/health"
