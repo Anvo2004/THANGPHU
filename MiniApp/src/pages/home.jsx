@@ -13,6 +13,11 @@ import SITE from "../data/site.js";
 import { openExternal } from "../utils/open-external.js";
 import logo from "../static/logo-thangphu.png";
 import heroArt from "../static/tranh-dau-trang.svg";
+import heroPhoto1 from "../static/hero-1.jpg";
+import heroPhoto2 from "../static/hero-2.jpg";
+
+// Ảnh thật của xã (lấy từ trình chiếu trên cổng thông tin thangphu.danang.gov.vn).
+const HERO_PHOTOS = [heroPhoto1, heroPhoto2];
 
 const TAG_TONES = ["bamboo", "lake", "violet", "gold"];
 
@@ -22,6 +27,7 @@ const HomePage = () => {
 
   const [siteInfo, setSiteInfo] = useState({});
   const [notices, setNotices] = useState([]);
+  const [photo, setPhoto] = useState(0);
 
   useEffect(() => {
     fetch(`${API_BASE_URL}/api/public/site-info`)
@@ -35,13 +41,27 @@ const HomePage = () => {
       .catch(() => setNotices([]));
   }, []);
 
+  // Trình chiếu ảnh nền đầu trang (chuyển mờ dần mỗi 6 giây).
+  useEffect(() => {
+    const timer = setInterval(() => setPhoto((p) => (p + 1) % HERO_PHOTOS.length), 6000);
+    return () => clearInterval(timer);
+  }, []);
+
   const contact = siteInfo.contact || {};
   const digitalTransform = siteInfo.digitalTransform || {};
 
   return (
     <Page className="page-home tp-page">
       <header className="tp-hero">
-        <img className="tp-hero__art" src={heroArt} alt="" />
+        {HERO_PHOTOS.map((src, i) => (
+          <img
+            key={src}
+            className={`tp-hero__photo ${i === photo ? "is-active" : ""}`}
+            src={src}
+            alt={i === 0 ? "Cảnh quan xã Thăng Phú" : ""}
+            aria-hidden={i === 0 ? undefined : "true"}
+          />
+        ))}
         <div className="tp-hero__shade" aria-hidden="true" />
         <div className="tp-hero__content">
           <div className="tp-hero__top">

@@ -6,6 +6,7 @@ import API_BASE_URL from "./api-config.js";
 
 const REF_KEY = "thangphu_ref_code";
 const PHONE_ASKED_KEY = "thangphu_phone_asked";
+const LINKED_KEY = "thangphu_citizen_linked";
 
 function store(key, value) {
   try {
@@ -33,6 +34,10 @@ export function captureReferral() {
     /* không chạy trong Zalo (web mirror) */
   }
 }
+
+// Đã bấm "Cho phép & liên kết" ở màn xin phép đầu tiên của tab Công dân.
+export const isLinked = () => load(LINKED_KEY) === "1";
+export const markLinked = () => store(LINKED_KEY, "1");
 
 export const pendingReferral = () => load(REF_KEY);
 export const clearPendingReferral = () => store(REF_KEY, null);

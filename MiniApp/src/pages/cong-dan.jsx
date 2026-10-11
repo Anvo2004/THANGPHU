@@ -16,6 +16,8 @@ import {
   clearPendingReferral,
   fetchProgram,
   fetchVillages,
+  isLinked,
+  markLinked,
   markPhoneAsked,
   openCitizen,
   pendingReferral,
@@ -29,6 +31,7 @@ import {
 const CitizenPage = () => {
   const navigate = useNavigate();
   const [citizen, setCitizen] = useState(null);
+  const [linked, setLinked] = useState(isLinked());
   const [program, setProgram] = useState(null);
   const [oaId, setOaId] = useState("");
   const [loading, setLoading] = useState(true);
@@ -92,10 +95,31 @@ const CitizenPage = () => {
           setOaId(d.oaId || "");
         })
         .catch(() => {});
+      if (!isLinked()) {
+        setLoading(false); // lần đầu: chờ người dùng bấm "Cho phép & liên kết"
+        return;
+      }
       const c = await load();
       if (c && !c.phone) askPhone(false);
     })();
   }, [load, askPhone]);
+
+  // Lần đầu vào tab Công dân: xin phép MỘT lần (tên, ảnh, số điện thoại), đăng ký
+  // tài khoản (+điểm), rồi mời chọn thôn/tổ để hồ sơ đầy đủ.
+  const link = async () => {
+    setBusy(true);
+    setLoading(true);
+    resetPhoneAsked();
+    const c = await load();
+    if (c) {
+      await askPhone(true);
+      markLinked();
+      setLinked(true);
+      notify("Đã liên kết tài khoản Zalo");
+      if (!c.village) setTimeout(() => openVillages(), 400);
+    }
+    setBusy(false);
+  };
 
   const relink = async () => {
     setBusy(true);
@@ -213,13 +237,37 @@ const CitizenPage = () => {
     return (
       <Page className="page-citizen tp-page">
         <Header title="Công dân số" />
-        <div className="citizen-state">
-          <img className="citizen-state__logo" src={logo} alt="Thăng Phú Số" />
-          <p>{error || "Cần liên kết tài khoản Zalo để dùng tab Công dân."}</p>
-          <button type="button" className="citizen-btn" onClick={relink} disabled={busy}>
-            Liên kết tài khoản Zalo
+        <section className="tp-intro tp-rise">
+          <div className="tp-crest tp-float tp-intro__crest">
+            <img src={logo} alt="Quốc huy Việt Nam" />
+          </div>
+          <h1 className="tp-intro__title">Liên kết tài khoản Zalo</h1>
+          <p className="tp-intro__lead">
+            Để dùng tab Công dân, Thăng Phú Số cần bạn cho phép sử dụng các thông tin sau:
+          </p>
+          <ul className="tp-intro__list">
+            <li>
+              <b>Tên và ảnh đại diện Zalo</b>
+              <span>Hiển thị trong hồ sơ công dân của bạn.</span>
+            </li>
+            <li>
+              <b>Số điện thoại</b>
+              <span>Để cán bộ liên hệ khi xử lý phản ánh và xác minh tài khoản tích điểm.</span>
+            </li>
+            <li>
+              <b>Thôn/Tổ bạn sinh sống</b>
+              <span>Bạn sẽ chọn ngay sau khi liên kết.</span>
+            </li>
+          </ul>
+          {error && <p className="tp-intro__error">{error}</p>}
+          <button type="button" className="tp-relink tp-press tp-intro__btn" onClick={link} disabled={busy}>
+            Cho phép &amp; liên kết
           </button>
-        </div>
+          <p className="tp-intro__note">
+            Thông tin chỉ dùng cho dịch vụ của UBND xã Thăng Phú. Bạn có thể từ chối cấp số điện thoại và
+            vẫn sử dụng ứng dụng. Liên kết lần đầu nhận +{program?.rules?.register?.points ?? 5} điểm.
+          </p>
+        </section>
       </Page>
     );
   }

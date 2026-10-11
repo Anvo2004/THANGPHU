@@ -146,6 +146,9 @@ body {
   }
 }
 @media (prefers-reduced-motion: reduce) {
+  .tp-hero__photo {
+    transition: none !important;
+  }
   .tp-rise,
   .tp-shine::after,
   .tp-pulse::before,
@@ -266,10 +269,32 @@ body {
     height: 230px;
     object-fit: cover;
   }
+  // Ảnh thật của xã: phủ kín đầu trang, chuyển mờ dần giữa các ảnh.
+  &__photo {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0;
+    transition: opacity 1.4s ease;
+
+    &.is-active {
+      opacity: 1;
+    }
+  }
   &__shade {
     position: absolute;
     inset: 0;
-    background: linear-gradient(180deg, rgba(8, 30, 80, 0.92) 0%, rgba(8, 30, 80, 0.55) 45%, rgba(8, 30, 80, 0) 75%);
+    // Tối ở trên để chữ/tìm kiếm đọc rõ, nhạt dần xuống để thấy ảnh, tối nhẹ ở đáy
+    // để thẻ số liệu nổi lên.
+    background: linear-gradient(
+      180deg,
+      rgba(8, 30, 80, 0.88) 0%,
+      rgba(8, 30, 80, 0.62) 38%,
+      rgba(8, 30, 80, 0.12) 70%,
+      rgba(8, 30, 80, 0.38) 100%
+    );
   }
   &__content {
     position: relative;
@@ -1364,5 +1389,73 @@ body {
     &__item.is-active {
       color: var(--tp-lake);
     }
+  }
+}
+
+/* ---------- Màn xin phép lần đầu (tab Công dân) ---------- */
+.tp-intro {
+  margin: calc(var(--zaui-safe-area-inset-top, 0px) + 44px + 18px) 14px 0;
+  padding: 24px 18px 20px;
+  border-radius: 24px;
+  background: #fff;
+  box-shadow: var(--tp-shadow-lift);
+  text-align: center;
+
+  &__crest {
+    margin: 0 auto 12px;
+  }
+  &__title {
+    margin: 0 0 6px;
+    font-size: 20px;
+    font-weight: 800;
+    color: var(--tp-ink);
+  }
+  &__lead {
+    margin: 0 0 14px;
+    font-size: 13.5px;
+    line-height: 1.5;
+    color: var(--tp-ink-2);
+  }
+  &__list {
+    margin: 0 0 14px;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    text-align: left;
+
+    li {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      padding: 10px 12px;
+      border-radius: 14px;
+      background: #f2f6ff;
+    }
+    b {
+      font-size: 13.5px;
+      color: var(--tp-lake);
+    }
+    span {
+      font-size: 12.5px;
+      line-height: 1.4;
+      color: var(--tp-muted);
+    }
+  }
+  &__error {
+    margin: 0 0 10px;
+    font-size: 12.5px;
+    color: #c0392b;
+  }
+  &__btn {
+    margin: 0;
+    width: 100%;
+  }
+  &__note {
+    margin: 12px 0 0;
+    font-size: 11.5px;
+    line-height: 1.5;
+    color: var(--tp-muted);
   }
 }
