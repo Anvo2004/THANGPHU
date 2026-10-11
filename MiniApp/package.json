@@ -5,9 +5,10 @@
   "scripts": {
     "start": "vite dev",
     "build": "vite build",
-    "serve": "vite preview --host 0.0.0.0",
-    "deploy:dev": "zmp-cli deploy --existing",
-    "deploy:testing": "zmp-cli deploy --existing --testing"
+    "serve": "vite preview --host 0.0.0.0 --strictPort --port 3013",
+    "deploy:dev": "npm run sync:app-id && zmp-cli deploy --existing",
+    "deploy:testing": "npm run sync:app-id && zmp-cli deploy --existing --testing",
+    "sync:app-id": "node scripts/sync-app-id.mjs"
   },
   "dependencies": {
     "react": "^18.2.0",

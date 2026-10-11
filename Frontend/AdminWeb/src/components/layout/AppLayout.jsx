@@ -40,7 +40,7 @@ export default function AppLayout() {
 
       {/* Main content */}
       <div className="ml-64 flex-1 flex flex-col overflow-hidden min-w-0">
-        {/* Gradient header — màu y hệt NONGSON (xanh sáng → cyan) */}
+        {/* Gradient header — gradient xanh sáng → cyan */}
         <header className="relative shrink-0 overflow-hidden"
           style={{ background: 'linear-gradient(135deg, #1d4ed8 0%, #2563eb 40%, #0ea5e9 100%)' }}>
           <div className="pointer-events-none absolute -top-10 -right-10 h-48 w-48 rounded-full bg-white/5" />

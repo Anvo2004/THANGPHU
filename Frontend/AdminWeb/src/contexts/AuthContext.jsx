@@ -5,7 +5,7 @@ const AuthContext = createContext(null)
 
 function loadStoredUser() {
   try {
-    const saved = localStorage.getItem('auth_user')
+    const saved = localStorage.getItem('thangphu_auth_user')
     return saved ? JSON.parse(saved) : null
   } catch {
     return null
@@ -18,7 +18,7 @@ export function AuthProvider({ children }) {
 
   useEffect(() => {
     // Nếu đã có token trong localStorage, xác thực lại với server
-    const token = localStorage.getItem('auth_token')
+    const token = localStorage.getItem('thangphu_auth_token')
     if (!token) {
       setIsLoading(false)
       return
@@ -27,11 +27,11 @@ export function AuthProvider({ children }) {
       .then((r) => {
         const userData = r.data.user || r.data
         setUser(userData)
-        localStorage.setItem('auth_user', JSON.stringify(userData))
+        localStorage.setItem('thangphu_auth_user', JSON.stringify(userData))
       })
       .catch(() => {
-        localStorage.removeItem('auth_token')
-        localStorage.removeItem('auth_user')
+        localStorage.removeItem('thangphu_auth_token')
+        localStorage.removeItem('thangphu_auth_user')
         setUser(null)
       })
       .finally(() => setIsLoading(false))
@@ -39,14 +39,14 @@ export function AuthProvider({ children }) {
 
   const setAuth = (userData, token) => {
     setUser(userData)
-    localStorage.setItem('auth_user', JSON.stringify(userData))
-    if (token) localStorage.setItem('auth_token', token)
+    localStorage.setItem('thangphu_auth_user', JSON.stringify(userData))
+    if (token) localStorage.setItem('thangphu_auth_token', token)
   }
 
   const logout = async () => {
     try { await api.post('/api/auth/logout') } catch {}
-    localStorage.removeItem('auth_token')
-    localStorage.removeItem('auth_user')
+    localStorage.removeItem('thangphu_auth_token')
+    localStorage.removeItem('thangphu_auth_user')
     setUser(null)
     window.location.href = '/login'
   }

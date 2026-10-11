@@ -1,12 +1,17 @@
-require("./loadEnvironment").loadEnvironment();
+require("dotenv").config();
 const path = require("path");
 
 module.exports = {
-  port: process.env.PORT || 4020,
-  // Share the server URI, but every connection explicitly selects this database.
-  mongoUri: process.env.MONGO_URI || "mongodb://127.0.0.1:27017",
+  port: process.env.PORT || 4012,
+  mongoUri: process.env.MONGO_URI,
+  // Luôn chọn DB theo tên này, bất kể URI có kèm tên DB hay không.
   mongoDbName: process.env.MONGO_DB_NAME || "thangphu",
-  jwtSecret: process.env.JWT_SECRET || "thangphu-jwt-secret-2026",
+  jwtSecret: process.env.JWT_SECRET || "",
+
+  adminSeed: {
+    username: process.env.ADMIN_SEED_USERNAME || "admin",
+    password: process.env.ADMIN_SEED_PASSWORD || "",
+  },
 
   cloudinary: {
     cloudName: process.env.CLOUDINARY_CLOUD_NAME,
@@ -32,16 +37,16 @@ module.exports = {
     siteVerification: process.env.ZALO_SITE_VERIFICATION || "",
   },
 
-  corsOrigin: process.env.CORS_ORIGIN || "*",
+  corsOrigin: process.env.CORS_ORIGIN === "*" ? "*" : (process.env.CORS_ORIGIN || "http://localhost:5182,http://localhost:5183").split(",").map((s) => s.trim()).filter(Boolean),
 
   // URL công khai của Backend — để tạo LINK TUYỆT ĐỐI cho file gửi qua Zalo OA
   // (Zalo cần URL đầy đủ https://...; link tương đối bị bọc thành zalo.me/nf).
-  publicUrl: process.env.PUBLIC_URL || "http://localhost:4020",
+  publicUrl: process.env.PUBLIC_URL || "http://localhost:4012",
 
   // ===== Trợ lý số (Claude API) — tự tắt (503) nếu thiếu API key =====
   anthropic: {
     apiKey: process.env.ANTHROPIC_API_KEY || "",
-    model: process.env.ANTHROPIC_MODEL || "claude-sonnet-5",
+    model: process.env.ANTHROPIC_MODEL || "",
   },
 
   // Thư mục chứa media tĩnh nặng (video Kỹ năng PCTT) — nằm ngoài git, phục vụ
@@ -61,8 +66,7 @@ module.exports = {
     // cskh-api.cpc.vn — xem README của workflow).
     ingestSecret: process.env.LICH_CUP_DIEN_INGEST_SECRET || "",
     // Nguồn thay thế: cào trang bên thứ 3 xenvn.com (đăng lại lịch cắt điện).
-    // URL mẫu Thăng Điền: https://xenvn.com/lich-cup-dien/dien-luc-thang-binh-pc05ff/
-    // — path "dien-luc-thang-binh-pc05ff" đổi theo mã điện lực từng khu vực.
+    // Path dạng "dien-luc-<đơn vị>-<mã>" theo từng khu vực điện lực.
     xenvnUrl: process.env.XENVN_URL || "",
   },
 

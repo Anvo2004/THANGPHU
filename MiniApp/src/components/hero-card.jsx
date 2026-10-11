@@ -1,6 +1,6 @@
 import React from "react";
 import SITE from "../data/site.js";
-import logo from "../static/ward-icon.svg";
+import logo from "../static/logo-thangphu.png";
 
 const HeroCard = () => {
   return (

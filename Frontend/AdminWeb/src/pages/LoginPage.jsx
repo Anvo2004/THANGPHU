@@ -8,7 +8,7 @@ import 'leaflet/dist/leaflet.css'
 import { api } from '@/lib/api'
 import { useAuth } from '@/contexts/AuthContext'
 import { toast } from 'sonner'
-import logoImg from '@/images/ward-icon.svg'
+import logoImg from '@/images/logo-thangphu.png'
 import '@/styles/login.css'
 
 // Tâm thành phố để mở bản đồ; ranh giới xã được tra theo tên.

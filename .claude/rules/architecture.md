@@ -43,7 +43,7 @@ React + Vite + React Query + Tailwind (shadcn-style components trong
 React + `zmp-sdk`/`zmp-ui`, build bằng `zmp-vite-plugin` → `www/`. Không dùng
 hệ JWT admin — công dân định danh qua Zalo user id (`zmp-sdk` access token,
 verify server-side bằng `requireZaloUser`, xem `src/utils/zaloMiniApp.js`
-phía Backend). `src/data/api-config.js` chứa `API_BASE_URL` từ biến Vite `VITE_API_URL`, được đưa vào bundle khi build.
+phía Backend). `src/data/api-config.js` đọc `VITE_API_URL` từ MiniApp/.env.
 
 ## Auth 2 tầng, không dùng chung
 

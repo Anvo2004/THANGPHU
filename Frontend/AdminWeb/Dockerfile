@@ -7,6 +7,10 @@ COPY . .
 # We can inject API URL at build time if needed via build arg
 ARG VITE_API_URL
 ENV VITE_API_URL=$VITE_API_URL
+ARG VITE_MAP_LAT
+ARG VITE_MAP_LNG
+ENV VITE_MAP_LAT=$VITE_MAP_LAT
+ENV VITE_MAP_LNG=$VITE_MAP_LNG
 RUN npm run build
 
 # Serve stage

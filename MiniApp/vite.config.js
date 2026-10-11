@@ -35,14 +35,9 @@ export default defineConfig(({ mode }) => {
       emptyOutDir: true,
       assetsDir: "assets",
     },
-    server: {
-      port: Number(env.DEV_PORT || 5176),
-      strictPort: true,
-    },
+    server: { port: 5183, strictPort: true },
     preview: {
-      port: Number(env.PREVIEW_PORT || 3021),
-      strictPort: true,
-      allowedHosts: (env.PREVIEW_ALLOWED_HOSTS || "").split(",").map((host) => host.trim()).filter(Boolean),
+      allowedHosts: (env.PREVIEW_ALLOWED_HOSTS || "").split(",").map((s) => s.trim()).filter(Boolean),
     },
   };
 });

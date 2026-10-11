@@ -15,9 +15,9 @@ RUN npm run build
 FROM nginx:alpine
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 # ZMP outputs to 'www' or 'dist', we'll assume standard Vite output 'dist' or 'www'
-# We copy 'www' if it exists, or 'dist' if it doesn't. 
+# We copy 'www' if it exists, or 'dist' if it doesn't.
 # Typically zmp-cli outputs to 'www', so we copy that. If it's pure vite it outputs to 'dist'.
-# We can just copy everything from the build context and let nginx serve it, 
+# We can just copy everything from the build context and let nginx serve it,
 # but specifically we need to find where Vite outputs.
 # According to ZMP standard, it's usually `www`
 COPY --from=build /app/www /usr/share/nginx/html

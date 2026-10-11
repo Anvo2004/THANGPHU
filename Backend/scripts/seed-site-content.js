@@ -14,7 +14,9 @@ const SiteInfo = require("../src/models/SiteInfo");
 
 // Nguồn: https://cttdt.danangportal.gov.vn/vi/w/xa-thang-phu
 // Dân số được công bố tại thời điểm tháng 7/2025; không suy thành số liệu 2026.
-// Thông tin chưa xác minh để trống, cán bộ cập nhật qua AdminWeb.
+// Hotline/địa chỉ UBND và Công an: theo Cổng thông tin bản đồ Đà Nẵng (xác nhận 10/10/2026).
+// Xã sáp nhập từ Bình Phú + Bình Quế (huyện Thăng Bình cũ). Thông tin chưa xác minh
+// (giờ làm việc, chủ tịch, thôn) để trống, cán bộ cập nhật qua AdminWeb.
 const VILLAGES = [];
 const DAN_SO = { source: "https://cttdt.danangportal.gov.vn/vi/w/xa-thang-phu", dataAsOf: "Tháng 7/2025", tongDanSo: 17266, dienTichKm2: 60.5, soThon: null, hoDan: null, gioiTinh: null, doTuoi: null };
 const DU_LICH = { title: "Du lịch - Danh thắng", subtitle: "Khám phá Thăng Phú", diemNoiBat: [], diemThamQuan: [] };
@@ -23,12 +25,12 @@ const SITE_INFO = {
   contact: {
     officeName: "UBND xã Thăng Phú",
     address: "Thôn Tú Trà, xã Thăng Phú, thành phố Đà Nẵng",
-    phone: "", hotline: "", hotline2: "",
+    phone: "0905 029 474", hotline: "0905 029 474", hotline2: "",
     email: "tttdt-xathangphu@danang.gov.vn",
     website: "thangphu.danang.gov.vn",
     workHours: "",
     chairman: { name: "", title: "Chủ tịch UBND xã Thăng Phú", phone: "" },
-    policeStation: { name: "Công an xã Thăng Phú", address: "", phone: "" },
+    policeStation: { name: "Công an xã Thăng Phú", address: "Tổ 7, Thôn Bình Quang, xã Thăng Phú (trụ sở UBND xã Bình Quế cũ)", phone: "023 5366 9113" },
   },
   zaloOA: { name: "Zalo OA xã Thăng Phú", description: "Nhận thông báo, tin tức mới nhất từ chính quyền." },
   digitalTransform: { title: "Chuyển đổi số xã Thăng Phú", tags: ["Chính quyền số", "Kinh tế số", "Xã hội số"] },

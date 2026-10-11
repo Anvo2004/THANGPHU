@@ -3,3 +3,8 @@ npm-debug.log
 .env
 .DS_Store
 dist
+
+.env.*
+!.env.example
+www
+.git

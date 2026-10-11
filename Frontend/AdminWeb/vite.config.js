@@ -1,23 +1,21 @@
-import { defineConfig, loadEnv } from 'vite'
+import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import path from 'path'
 import { fileURLToPath } from 'url'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
-export default defineConfig(({ mode }) => {
-  const env = loadEnv(mode, process.cwd(), '')
-  return {
+export default defineConfig({
   plugins: [react()],
   resolve: {
     alias: { '@': path.resolve(__dirname, './src') },
   },
   server: {
-    port: Number(env.DEV_PORT || 5175),
+    port: 5182,
     strictPort: true,
     proxy: {
       '/api': {
-        target: env.VITE_API_URL || 'http://localhost:4020',
+        target: 'http://localhost:4012',
         changeOrigin: true,
       },
     },
@@ -26,5 +24,4 @@ export default defineConfig(({ mode }) => {
     outDir: 'www',
     emptyOutDir: true,
   },
-  }
 })

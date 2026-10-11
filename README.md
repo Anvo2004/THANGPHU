@@ -1,31 +1,58 @@
-# Thăng Phú Số
+# MINIAPP_THANGPHU — Thăng Phú Số
 
-Mini App Zalo phục vụ người dân xã Thăng Phú, phát triển từ dự án Trà Liên.
-Gồm MiniApp, AdminWeb và Backend Express/MongoDB; giữ chức năng phản ánh,
-tin tức, văn bản, tra cứu, lịch y tế, lịch điện, thông báo và trợ lý số.
+Dự án độc lập được sao chép từ MINIAPP_TRALIEN ngày 02/10/2026, giữ các module Backend, AdminWeb và Zalo MiniApp. Database, tài khoản, môi trường, dữ liệu địa phương và triển khai được cấu hình riêng.
 
-## Chạy local
+**Bắt đầu tại [Danh sách thông tin cần bổ sung](docs/SETUP_CHECKLIST.md).** Các file `.env` đã được tạo, thông tin chưa biết để trống. Chưa kết nối database, chưa tạo tài khoản trên hệ thống ngoài, chưa deploy.
 
-Trong mỗi app, sao chép .env.example thành .env nếu chưa có, rồi cài dependency
-bằng npm ci. Backend đọc các cấu hình hạ tầng dùng chung từ Backend/.env của
-Nông Sơn qua SHARED_ENV_FILE. Database luôn chọn theo MONGO_DB_NAME=thangphu;
-không dùng chung dữ liệu xã. Xem [hướng dẫn cấu hình chung](docs/CAU_HINH_DUNG_CHUNG.md).
-Chạy từng app trong terminal riêng:
+**[Đánh giá theo 5 nhóm yêu cầu — 02/10/2026](docs/DANH_GIA_CHUC_NANG_2026-10-02.md): chưa đủ điều kiện nghiệm thu.** Báo cáo nêu chức năng đã có, lỗi cần sửa, thông tin cần cung cấp và các ca kiểm thử thực tế.
 
-- Backend: npm run dev (cổng 4020).
-- Frontend/AdminWeb: npm run dev (cổng 5175).
-- MiniApp: npm run start (cổng 5176).
+## Chạy trên máy
 
-Sau khi cấu hình database, trong Backend chạy node scripts/seed-site-content.js
-và node scripts/seed-app-links.js để tạo nội dung ban đầu.
-Tạo tài khoản cán bộ và danh mục bằng node scripts/seed.js trong Backend.
-Script tạo tài khoản admin với mật khẩu khởi tạo ghi trong script; đổi ngay sau lần đăng nhập đầu.
+Yêu cầu Node.js 20 và MongoDB riêng (local hoặc Atlas). Các dependency đã được cài; trên máy mới chạy `npm ci` trong từng thư mục.
 
-## Kiểm tra
+1. Điền `MONGO_URI`, `JWT_SECRET`, `ADMIN_SEED_PASSWORD` trong `Backend/.env`.
+2. Từ thư mục `Backend`, khởi tạo dữ liệu:
 
-- Backend: node --test
-- MiniApp và Frontend/AdminWeb: npm run build
+```powershell
+node scripts/seed.js
+node scripts/seed-site-content.js
+node scripts/seed-app-links.js
+```
 
-VITE_API_URL của mỗi frontend mặc định là http://localhost:4020; khi triển khai
-điền URL HTTPS thực tế rồi build lại. Không dùng database, OA hoặc Mini App ID
-của Trà Liên. Xem [checklist cấu hình](docs/SETUP_CHECKLIST.md).
+`seed-site-content.js` tạo nội dung trống cho Thăng Phú; các script bỏ qua bản ghi đã có. `seed-tthc.js` giữ danh mục TTHC tham khảo của dự án gốc; chỉ chạy sau khi rà soát nội dung cho xã mới. Không chạy seed với database của xã khác.
+
+3. Mở ba terminal riêng:
+
+| Thư mục | Lệnh | Địa chỉ local |
+|---|---|---|
+| `Backend` | `npm run dev` | http://localhost:4012 |
+| `Frontend/AdminWeb` | `npm run dev` | http://localhost:5182 |
+| `MiniApp` | `npm run start` | http://localhost:5183 |
+
+Đăng nhập bằng `ADMIN_SEED_USERNAME` và `ADMIN_SEED_PASSWORD` đã đặt. Điền thông tin tích hợp theo nhu cầu. Các phần cần Zalo phải kiểm tra trong môi trường Zalo với App ID riêng.
+
+## File cấu hình
+
+| File | Vai trò |
+|---|---|
+| `Backend/.env` | DB, JWT, tài khoản admin khởi tạo, Zalo, nguồn tin, điện lực và tích hợp |
+| `Frontend/AdminWeb/.env` | API và tọa độ trụ sở cho AdminWeb |
+| `MiniApp/.env` | API, Mini App ID, domain preview |
+| `.env` tại thư mục gốc | Biến dùng riêng cho Docker Compose |
+| `MiniApp/zmp-cli.json` | App ID triển khai Zalo; đồng bộ bằng `npm run sync:app-id` |
+
+Mỗi `.env` có `.env.example` đi kèm. Không đưa khóa bí mật vào các biến `VITE_*`, vì chúng xuất hiện trong JavaScript phía người dùng. Đổi cấu hình frontend phải build lại.
+
+## Build và triển khai
+
+Chạy `npm run build` trong `Frontend/AdminWeb` và `MiniApp`; cả hai xuất ra `www/`. Trong MiniApp, sau khi điền `APP_ID`, chạy `npm run sync:app-id` trước khi dùng Zalo CLI/extension. Các lệnh `deploy:dev` và `deploy:testing` tự đồng bộ ID.
+
+Docker: điền cả `.env` ở gốc rồi chạy `docker compose up --build -d`. Cổng host mặc định: Backend 4012, AdminWeb 3012, MiniApp 3013. Compose không cung cấp MongoDB; nếu MongoDB chạy trên máy host, dùng địa chỉ phù hợp từ container (ví dụ `host.docker.internal` trên Docker Desktop). Dữ liệu upload và media gắn vào thư mục riêng của dự án.
+
+GitHub Actions deploy và đồng bộ điện chỉ chạy thủ công sau khi bật biến tương ứng. Xem checklist để cấu hình repository/VPS. Repository của dự án: [Anvo2004/THANGPHU](https://github.com/Anvo2004/THANGPHU), nhánh `main`.
+
+## Nội dung cần bổ sung
+
+Logo/banner hiện là SVG tạm. Dân số, thôn, liên hệ, văn hóa, du lịch đang để trống. Đã sao chép riêng 57 ảnh và 14 video PCTT vào `Backend/media`; danh sách ở [MEDIA_CHECKLIST.json](docs/MEDIA_CHECKLIST.json). Mã nguồn đầy đủ được giữ; các chức năng cần dữ liệu hoặc dịch vụ bên ngoài chỉ kiểm thử đầy đủ sau khi bạn cung cấp cấu hình.
+
+Kết quả kiểm tra: [VERIFICATION.md](docs/VERIFICATION.md).

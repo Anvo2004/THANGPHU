@@ -4,7 +4,7 @@ import { Page, Header } from "zmp-ui";
 import Icon from "../components/icon.jsx";
 import API_BASE_URL from "../data/api-config.js";
 import { openExternal } from "../utils/open-external.js";
-import logo from "../static/ward-icon.svg";
+import logo from "../static/logo-thangphu.png";
 import SITE from "../data/site.js";
 
 // Suy ra trạng thái "đang làm việc" từ chuỗi workHours dạng

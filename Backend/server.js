@@ -10,6 +10,8 @@ const { startCgy1022Retry } = require("./src/services/cgy1022RetryService");
 const { startCgy1022StatusPolling } = require("./src/services/cgy1022StatusService");
 
 async function main() {
+  if (!config.mongoUri) throw new Error("Điền MONGO_URI của Thăng Phú trong Backend/.env");
+  if (config.jwtSecret.length < 32) throw new Error("JWT_SECRET phải có ít nhất 32 ký tự riêng cho Thăng Phú");
   await mongoose.connect(config.mongoUri, { dbName: config.mongoDbName });
   console.log("[server] MongoDB connected");
 

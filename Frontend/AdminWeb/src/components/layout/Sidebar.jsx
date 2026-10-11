@@ -2,7 +2,7 @@ import { NavLink } from 'react-router-dom'
 import { LayoutDashboard, MessageSquare, Users, LogOut, Settings, Send, Wallet, Stethoscope, FileText, LayoutGrid } from 'lucide-react'
 import { useAuth } from '@/contexts/AuthContext'
 import { cn } from '@/lib/utils'
-import logoImg from '@/images/ward-icon.svg'
+import logoImg from '@/images/logo-thangphu.png'
 
 const ROLE_LABELS = {
   superadmin:  'Lãnh đạo Ủy ban',

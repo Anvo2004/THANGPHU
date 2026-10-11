@@ -1,34 +1,34 @@
 name: Deploy Thang Phu Mini App
-
 on:
   workflow_dispatch:
-
 jobs:
   deploy:
-    if: ${{ vars.THANGPHU_DEPLOY_ENABLED == 'true' }}
-    environment: thangphu
+    if: vars.DEPLOY_ENABLED == 'true'
     runs-on: ubuntu-latest
     steps:
       - name: Deploy over SSH
         uses: appleboy/ssh-action@v1.0.3
+        env:
+          DEPLOY_PATH: ${{ vars.VPS_PROJECT_PATH }}
         with:
-          host: ${{ secrets.THANGPHU_VPS_HOST }}
-          username: deploy
-          key: ${{ secrets.THANGPHU_VPS_DEPLOY_SSH_KEY }}
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ vars.VPS_USERNAME }}
+          key: ${{ secrets.VPS_DEPLOY_SSH_KEY }}
+          envs: DEPLOY_PATH
           script: |
             set -e
-            cd /var/www/thangphu
-            git pull origin main
-
+            test -n "$DEPLOY_PATH"
+            test "$(basename "$DEPLOY_PATH")" = "thangphu"
+            cd "$DEPLOY_PATH"
+            git pull --ff-only origin main
             cd MiniApp
             npm ci
+            npm run sync:app-id
             npm run build
-            pm2 restart thangphu
-
+            pm2 restart thangphu --update-env
             cd ../Backend
             npm ci --omit=dev
-            pm2 restart thangphu-backend
-
+            pm2 restart thangphu-backend --update-env
             cd ../Frontend/AdminWeb
             npm ci
             npm run build

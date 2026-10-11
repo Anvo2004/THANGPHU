@@ -1,61 +1,37 @@
-name: thangphu
-
+name: miniapp-thangphu
 services:
   backend:
-    build:
-      context: ./Backend
-      dockerfile: Dockerfile
+    build: ./Backend
     container_name: thangphu-backend
     restart: unless-stopped
-    env_file:
-      - ./Backend/.env
+    env_file: ./Backend/.env
     environment:
-      PORT: "4000"
-      SHARED_ENV_FILE: /run/shared/backend.env
-    volumes:
-      - type: bind
-        source: ${SHARED_ENV_FILE_HOST:-../NONGSON/Backend/.env}
-        target: /run/shared/backend.env
-        read_only: true
-        bind:
-          create_host_path: false
+      PORT: 4012
     ports:
-      - "${THANGPHU_BACKEND_PORT:-4020}:4000"
-    networks:
-      - thangphu-network
-
+      - "${BACKEND_PORT:-4012}:4012"
+    volumes:
+      - ./Backend/media:/app/media
+      - ./Backend/public/images:/app/public/images
   admin-web:
     build:
       context: ./Frontend/AdminWeb
-      dockerfile: Dockerfile
       args:
-        # URL backend Thăng Phú, được đưa vào bundle khi build.
-        - VITE_API_URL=${VITE_API_URL_ADMIN:-http://localhost:4020}
+        VITE_API_URL: ${VITE_API_URL_ADMIN}
+        VITE_MAP_LAT: ${VITE_MAP_LAT}
+        VITE_MAP_LNG: ${VITE_MAP_LNG}
     container_name: thangphu-admin-web
     restart: unless-stopped
     ports:
-      - "${THANGPHU_ADMIN_PORT:-3020}:80"
-    networks:
-      - thangphu-network
-    depends_on:
-      - backend
-
+      - "${ADMIN_PORT:-3012}:80"
+    depends_on: [backend]
   miniapp:
     build:
       context: ./MiniApp
-      dockerfile: Dockerfile
       args:
-        - VITE_API_URL=${VITE_API_URL_MINIAPP:-http://localhost:4020}
-        - APP_ID=${THANGPHU_MINIAPP_ID:-}
+        VITE_API_URL: ${VITE_API_URL_MINIAPP}
+        APP_ID: ${APP_ID}
     container_name: thangphu-miniapp
     restart: unless-stopped
     ports:
-      - "${THANGPHU_MINIAPP_PORT:-3021}:80"
-    networks:
-      - thangphu-network
-    depends_on:
-      - backend
-
-networks:
-  thangphu-network:
-    driver: bridge
+      - "${MINIAPP_PORT:-3013}:80"
+    depends_on: [backend]

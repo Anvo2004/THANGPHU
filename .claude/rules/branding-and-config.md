@@ -1,12 +1,9 @@
-# Chuyển dự án sang xã khác
+﻿# Cấu hình khi tạo dự án cho địa phương khác
 
-Mỗi xã có checkout, database, tài khoản OA, Mini App ID và cấu hình triển khai riêng.
-Xem docs/SETUP_CHECKLIST.md cho bản Thăng Phú hiện tại.
+Đọc README.md và docs/SETUP_CHECKLIST.md. Tên package, container, network, khóa lưu phiên và process phải riêng. Mỗi dự án có DB riêng.
 
-- Đổi tên app, nhãn giao diện, package, container, khóa Setting và đường dẫn triển khai.
-- URL API frontend lấy từ VITE_API_URL khi build, không hardcode domain xã cũ.
-- Không suy ra URL cổng xã hay mã điện lực bằng tìm-thay; kiểm tra nguồn thật.
-- Cấu trúc CMS có thể khác; kiểm tra cả danh sách, thân bài và văn bản.
-- Không đổi tên rồi giữ dữ liệu, logo hoặc ảnh riêng của xã cũ.
-- Không dùng lại Zalo Mini App ID, token OA, mã xác minh domain hay database của xã cũ.
-- Thiếu cấu hình bên ngoài: để trống và bỏ qua có thông báo.
+Đổi nhãn địa phương không đồng nghĩa dữ liệu cũ áp dụng cho xã mới. Xóa dữ liệu mẫu đặc thù, logo/banner cũ; giữ chức năng và dùng nội dung chờ cập nhật.
+
+Không suy đoán URL bên thứ ba, tài khoản hay mã điện lực bằng cách thay tên. Thông tin chưa có để trống trong .env.example, ghi rõ checklist. Không sao chép .env thật, token hoặc lịch sử Git.
+
+VITE_API_URL dùng cho cả hai frontend. APP_ID khai báo trong MiniApp/.env và đồng bộ bằng npm run sync:app-id.

@@ -4,3 +4,8 @@ npm-debug.log
 .DS_Store
 dist
 www
+
+.env.*
+!.env.example
+www
+.git

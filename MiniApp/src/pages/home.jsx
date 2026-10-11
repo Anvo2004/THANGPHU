@@ -11,7 +11,7 @@ import NoticeCard from "../components/notice-card.jsx";
 import API_BASE_URL from "../data/api-config.js";
 import useNews from "../data/use-news.js";
 import SITE from "../data/site.js";
-import logo from "../static/ward-icon.svg";
+import logo from "../static/logo-thangphu.png";
 import bannerPortal from "../static/banner-thangphu-portal.png";
 
 const HomePage = () => {
