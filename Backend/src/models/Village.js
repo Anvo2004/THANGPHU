@@ -6,6 +6,7 @@ const villageSchema = new mongoose.Schema({
   ten: { type: String, required: true },
   biThu: { type: String, default: "" },
   thonTruong: { type: String, default: "" },
+  dienThoai: { type: String, default: "" }, // SĐT trưởng thôn
   matTran: { type: String, default: "" },
   soHo: { type: Number, default: null },
   danSo: { type: Number, default: null },

@@ -17,8 +17,24 @@ const SiteInfo = require("../src/models/SiteInfo");
 // Hotline/địa chỉ UBND và Công an: theo Cổng thông tin bản đồ Đà Nẵng (xác nhận 10/10/2026).
 // Xã sáp nhập từ Bình Phú + Bình Quế (huyện Thăng Bình cũ). Thông tin chưa xác minh
 // (giờ làm việc, chủ tịch, thôn) để trống, cán bộ cập nhật qua AdminWeb.
-const VILLAGES = [];
-const DAN_SO = { source: "https://cttdt.danangportal.gov.vn/vi/w/xa-thang-phu", dataAsOf: "Tháng 7/2025", tongDanSo: 17266, dienTichKm2: 60.5, soThon: null, hoDan: null, gioiTinh: null, doTuoi: null };
+// Danh sách 11 thôn và trưởng thôn do UBND xã Thăng Phú cung cấp (file
+// ThongTin_DSThon_Xa_Thang_Phu.xlsx, 11/10/2026). Bí thư, Mặt trận, số hộ, dân số
+// để trống — cán bộ cập nhật sau.
+const VILLAGES = [
+  { ten: "Thôn Linh Cang", thonTruong: "Trương Văn Thành", dienThoai: "0973439649" },
+  { ten: "Thôn Phước An", thonTruong: "Lê Hồ Như Ý", dienThoai: "0357220515" },
+  { ten: "Thôn Lý Trường", thonTruong: "Võ Đình Công", dienThoai: "0985682070" },
+  { ten: "Thôn Long Hội", thonTruong: "Đoàn Ngọc Chiến", dienThoai: "0899922541" },
+  // Số gốc trong file có 11 chữ số (09396967347) — giữ nguyên, cần xác nhận lại.
+  { ten: "Thôn Tú Trà", thonTruong: "Lê Đức Thắng", dienThoai: "09396967347" },
+  { ten: "Thôn Ngũ Xã", thonTruong: "Dương Trung Hiếu", dienThoai: "0971669069" },
+  { ten: "Thôn Mỹ Trà", thonTruong: "Đặng Văn Hương", dienThoai: "0983338317" },
+  { ten: "Thôn Bình Quang", thonTruong: "Nguyễn Hồng Ngân", dienThoai: "0979107411" },
+  { ten: "Thôn Bình Xá", thonTruong: "Nguyễn Thanh Thiêm", dienThoai: "0398333129" },
+  { ten: "Thôn Bình Hội", thonTruong: "Nguyễn Văn Sương", dienThoai: "0779553943" },
+  { ten: "Thôn Bình Phụng", thonTruong: "Nguyễn Hữu Nhung", dienThoai: "0935937257" },
+];
+const DAN_SO = { source: "https://cttdt.danangportal.gov.vn/vi/w/xa-thang-phu", dataAsOf: "Tháng 7/2025", tongDanSo: 17266, dienTichKm2: 60.5, soThon: 11, hoDan: null, gioiTinh: null, doTuoi: null };
 const DU_LICH = { title: "Du lịch - Danh thắng", subtitle: "Khám phá Thăng Phú", diemNoiBat: [], diemThamQuan: [] };
 const VAN_HOA = { title: "Văn hóa - Nghệ thuật", subtitle: "Văn hóa địa phương Thăng Phú", hoatDong: [], diSan: [], diemNoiBat: [], tinTuc: [] };
 const SITE_INFO = {

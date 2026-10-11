@@ -12,7 +12,7 @@ router.get("/", async (req, res) => {
 });
 
 router.post("/", requireRole(...WRITE_ROLES), async (req, res) => {
-  const { ten, biThu, thonTruong, matTran, soHo, danSo, thuTu } = req.body;
+  const { ten, biThu, thonTruong, dienThoai, matTran, soHo, danSo, thuTu } = req.body;
 
   if (!ten) {
     return res.status(400).json({ error: "Thiếu tên thôn" });
@@ -22,6 +22,7 @@ router.post("/", requireRole(...WRITE_ROLES), async (req, res) => {
     ten,
     biThu,
     thonTruong,
+    dienThoai,
     matTran,
     soHo,
     danSo,
@@ -32,11 +33,11 @@ router.post("/", requireRole(...WRITE_ROLES), async (req, res) => {
 });
 
 router.put("/:id", requireRole(...WRITE_ROLES), async (req, res) => {
-  const { ten, biThu, thonTruong, matTran, soHo, danSo, thuTu } = req.body;
+  const { ten, biThu, thonTruong, dienThoai, matTran, soHo, danSo, thuTu } = req.body;
 
   const village = await Village.findByIdAndUpdate(
     req.params.id,
-    { ten, biThu, thonTruong, matTran, soHo, danSo, thuTu, updatedAt: new Date() },
+    { ten, biThu, thonTruong, dienThoai, matTran, soHo, danSo, thuTu, updatedAt: new Date() },
     { new: true }
   );
   if (!village) return res.status(404).json({ error: "Not found" });

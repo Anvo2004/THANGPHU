@@ -32,6 +32,7 @@ const ThonXomPage = () => {
     return thonXom.filter(
       (t) =>
         t.ten.toLowerCase().includes(kw) ||
+        (t.dienThoai || "").includes(kw) ||
         (t.biThu || "").toLowerCase().includes(kw) ||
         (t.thonTruong || "").toLowerCase().includes(kw) ||
         (t.matTran || "").toLowerCase().includes(kw)
@@ -98,6 +99,12 @@ const ThonXomPage = () => {
                     <span>
                       <b>Thôn trưởng:</b> {t.thonTruong || "Đang cập nhật"}
                     </span>
+                    {t.dienThoai && (
+                      <span>
+                        <b>Điện thoại:</b>{" "}
+                        <a href={`tel:${t.dienThoai.replace(/\s+/g, "")}`}>{t.dienThoai}</a>
+                      </span>
+                    )}
                     <span>
                       <b>TBCT Mặt trận:</b> {t.matTran || "Đang cập nhật"}
                     </span>
