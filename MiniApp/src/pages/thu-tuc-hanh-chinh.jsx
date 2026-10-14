@@ -1,134 +1,211 @@
-import React, { useEffect, useState } from "react";
-import { Page, Header, Box } from "zmp-ui";
+import React, { useEffect, useMemo, useState } from "react";
+import { Page, Header } from "zmp-ui";
 import API_BASE_URL from "../data/api-config.js";
+import Icon3D from "../components/icon3d.jsx";
 import { openExternal } from "../utils/open-external.js";
-import Icon from "../components/icon.jsx";
 
 const MUC_DO_LABEL = { "3": "Mức độ 3", "4": "Mức độ 4 (trực tuyến toàn trình)" };
 
+// Bỏ dấu + hạ chữ thường để gõ "khai sinh" vẫn tìm ra "Đăng ký khai sinh".
+function fold(s) {
+  return String(s || "")
+    .normalize("NFD")
+    .replace(/[̀-ͯ]/g, "")
+    .replace(/đ/g, "d")
+    .replace(/Đ/g, "D")
+    .toLowerCase();
+}
+
 const ThuTucHanhChinhPage = () => {
-  const [q, setQ] = useState("");
-  const [items, setItems] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [all, setAll] = useState(null); // null = đang tải
   const [error, setError] = useState("");
+  const [q, setQ] = useState("");
+  const [field, setField] = useState("all");
   const [openId, setOpenId] = useState(null);
+  const [hotline, setHotline] = useState("");
 
   useEffect(() => {
-    const params = new URLSearchParams();
-    if (q.trim()) params.set("q", q.trim());
+    fetch(`${API_BASE_URL}/api/public/thu-tuc-hanh-chinh`)
+      .then((res) => res.json())
+      .then((data) => setAll(data.items || []))
+      .catch(() => {
+        setAll([]);
+        setError("Không thể tải danh mục thủ tục. Vui lòng thử lại sau.");
+      });
 
-    setLoading(true);
-    const timer = setTimeout(() => {
-      fetch(`${API_BASE_URL}/api/public/thu-tuc-hanh-chinh?${params.toString()}`)
-        .then((res) => res.json())
-        .then((data) => {
-          setItems(data.items || []);
-          setError("");
-        })
-        .catch(() => setError("Không thể tải danh mục thủ tục. Vui lòng thử lại sau."))
-        .finally(() => setLoading(false));
-    }, 300);
+    fetch(`${API_BASE_URL}/api/public/site-info`)
+      .then((res) => res.json())
+      .then((data) => setHotline(data?.contact?.hotline || data?.contact?.phone || ""))
+      .catch(() => setHotline(""));
+  }, []);
 
-    return () => clearTimeout(timer);
-  }, [q]);
+  const fields = useMemo(() => {
+    const set = new Set((all || []).map((x) => x.linhVuc).filter(Boolean));
+    return [...set];
+  }, [all]);
+
+  const items = useMemo(() => {
+    const kw = fold(q.trim());
+    return (all || []).filter((x) => {
+      if (field !== "all" && x.linhVuc !== field) return false;
+      if (!kw) return true;
+      return fold(x.tenThuTuc).includes(kw) || fold(x.linhVuc).includes(kw);
+    });
+  }, [all, q, field]);
+
+  const loading = all === null;
+  const noData = !loading && all.length === 0 && !error;
 
   return (
-    <Page className="page-lookup">
+    <Page className="page-tthc tp-page">
       <Header title="Thủ tục hành chính" />
 
-      <div className="lookup-hero">
-        <span className="lookup-hero__icon">📋</span>
-        <div className="lookup-hero__title">Danh mục thủ tục hành chính</div>
-        <div className="lookup-hero__desc">
-          Xem trước giấy tờ cần chuẩn bị, thời gian xử lý trước khi đi làm thủ tục tại xã Thăng Phú
+      <div className="tp-subhero">
+        <div className="tp-subhero__row">
+          <Icon3D name="tthc" size={64} className="tp-float" />
+          <div>
+            <h1 className="tp-subhero__title">Danh mục thủ tục hành chính</h1>
+            <p className="tp-subhero__desc">
+              Xem trước giấy tờ cần chuẩn bị, thời gian xử lý trước khi đi làm thủ tục tại xã Thăng Phú
+            </p>
+          </div>
         </div>
       </div>
 
-      <Box className="section">
+      <div className="tp-tthc">
         <input
-          className="lookup-search"
-          placeholder="Tìm theo tên thủ tục, lĩnh vực..."
+          className="tp-tthc__search"
+          type="search"
+          placeholder="Tìm theo tên thủ tục, lĩnh vực…"
           value={q}
           onChange={(e) => setQ(e.target.value)}
         />
 
-        {loading && <div className="lookup-empty">Đang tải...</div>}
-        {!loading && error && <div className="lookup-empty">{error}</div>}
-        {!loading && !error && (
-          <div className="tthc-list">
-            {items.map((item) => {
-              const isOpen = openId === item._id;
-              const giayTo = (item.giayToCanNop || "")
-                .split("\n")
-                .map((s) => s.trim())
-                .filter(Boolean);
-              return (
-                <div
-                  key={item._id}
-                  className={`tthc-card ${isOpen ? "is-open" : ""}`}
-                  role="button"
-                  tabIndex={0}
-                  onClick={() => setOpenId(isOpen ? null : item._id)}
-                  onKeyDown={(e) => e.key === "Enter" && setOpenId(isOpen ? null : item._id)}
-                >
-                  <div className="tthc-card__head">
-                    <div className="tthc-card__title">{item.tenThuTuc}</div>
-                    <Icon name="chevron_right" className="tthc-card__chevron" />
-                  </div>
-                  <div className="tthc-card__meta">
-                    {item.linhVuc && <span className="tthc-card__tag">{item.linhVuc}</span>}
-                    {item.mucDo && (
-                      <span className="tthc-card__tag tthc-card__tag--muc4">
-                        {MUC_DO_LABEL[item.mucDo] || `Mức độ ${item.mucDo}`}
-                      </span>
-                    )}
-                  </div>
-
-                  {isOpen && (
-                    <div className="tthc-card__body" onClick={(e) => e.stopPropagation()}>
-                      {item.thoiGianXuLy && (
-                        <div className="tthc-card__body-row">
-                          <b>Thời gian xử lý</b>
-                          {item.thoiGianXuLy}
-                        </div>
-                      )}
-                      {giayTo.length > 0 && (
-                        <div className="tthc-card__body-row">
-                          <b>Giấy tờ cần nộp</b>
-                          <ul>
-                            {giayTo.map((g, i) => (
-                              <li key={i}>{g}</li>
-                            ))}
-                          </ul>
-                        </div>
-                      )}
-                      {item.ghiChu && (
-                        <div className="tthc-card__body-row">
-                          <b>Ghi chú</b>
-                          {item.ghiChu}
-                        </div>
-                      )}
-                      {item.linkNopTrucTuyen && (
-                        <div
-                          className="tthc-card__link"
-                          role="button"
-                          tabIndex={0}
-                          onClick={() => openExternal(item.linkNopTrucTuyen)}
-                        >
-                          Nộp trực tuyến
-                        </div>
-                      )}
-                    </div>
-                  )}
-                </div>
-              );
-            })}
-            {items.length === 0 && (
-              <div className="lookup-empty">Không tìm thấy thủ tục phù hợp.</div>
-            )}
+        {fields.length > 1 && (
+          <div className="tp-tthc__chips">
+            {["all", ...fields].map((f) => (
+              <button
+                key={f}
+                type="button"
+                className={field === f ? "is-active" : ""}
+                onClick={() => setField(f)}
+              >
+                {f === "all" ? "Tất cả" : f}
+              </button>
+            ))}
           </div>
         )}
-      </Box>
+
+        {loading && (
+          <div className="tp-tthc__list">
+            {[0, 1, 2].map((i) => (
+              <div key={i} className="tp-skeleton tp-tthc__ghost" />
+            ))}
+          </div>
+        )}
+
+        {error && <div className="tp-empty">{error}</div>}
+
+        {noData && (
+          <div className="tp-empty">
+            <b>Danh mục đang được cập nhật</b>
+            <span>UBND xã Thăng Phú đang hoàn thiện danh mục thủ tục. Vui lòng liên hệ Bộ phận một cửa để được hướng dẫn.</span>
+          </div>
+        )}
+
+        {!loading && all.length > 0 && (
+          <>
+            <div className="tp-tthc__count">
+              {items.length} thủ tục
+              {q.trim() || field !== "all" ? " phù hợp" : ""}
+            </div>
+            <div className="tp-tthc__list">
+              {items.map((item) => {
+                const isOpen = openId === item._id;
+                const docs = String(item.giayToCanNop || "")
+                  .split("\n")
+                  .map((s) => s.trim())
+                  .filter(Boolean);
+                return (
+                  <article key={item._id} className={`tp-tthc__card ${isOpen ? "is-open" : ""}`}>
+                    <button
+                      type="button"
+                      className="tp-tthc__head"
+                      onClick={() => setOpenId(isOpen ? null : item._id)}
+                      aria-expanded={isOpen}
+                    >
+                      <span className="tp-tthc__title">{item.tenThuTuc}</span>
+                      <span className="tp-tthc__meta">
+                        {item.linhVuc && <span className="tp-tthc__tag">{item.linhVuc}</span>}
+                        {item.mucDo && (
+                          <span className={`tp-tthc__tag tp-tthc__tag--lv${item.mucDo}`}>
+                            {MUC_DO_LABEL[item.mucDo] || `Mức độ ${item.mucDo}`}
+                          </span>
+                        )}
+                      </span>
+                      <span className="tp-tthc__chev" aria-hidden="true">
+                        {isOpen ? "–" : "+"}
+                      </span>
+                    </button>
+
+                    {isOpen && (
+                      <div className="tp-tthc__body">
+                        {item.thoiGianXuLy && (
+                          <div className="tp-tthc__block">
+                            <b>Thời gian xử lý</b>
+                            <p>{item.thoiGianXuLy}</p>
+                          </div>
+                        )}
+                        {docs.length > 0 && (
+                          <div className="tp-tthc__block">
+                            <b>Giấy tờ cần nộp</b>
+                            <ul>
+                              {docs.map((d, i) => (
+                                <li key={i}>{d}</li>
+                              ))}
+                            </ul>
+                          </div>
+                        )}
+                        {item.ghiChu && (
+                          <div className="tp-tthc__block">
+                            <b>Ghi chú</b>
+                            <p>{item.ghiChu}</p>
+                          </div>
+                        )}
+                        <div className="tp-tthc__actions">
+                          {item.linkNopTrucTuyen && (
+                            <button
+                              type="button"
+                              className="tp-tthc__btn"
+                              onClick={() => openExternal(item.linkNopTrucTuyen)}
+                            >
+                              Nộp trực tuyến
+                            </button>
+                          )}
+                          {hotline && (
+                            <a
+                              className="tp-tthc__btn tp-tthc__btn--ghost"
+                              href={`tel:${hotline.replace(/\s+/g, "")}`}
+                            >
+                              Gọi Bộ phận một cửa
+                            </a>
+                          )}
+                        </div>
+                      </div>
+                    )}
+                  </article>
+                );
+              })}
+              {items.length === 0 && <div className="tp-empty">Không tìm thấy thủ tục phù hợp.</div>}
+            </div>
+
+            <p className="tp-tthc__disclaimer">
+              Thông tin mang tính tham khảo theo quy định chung. Thời gian và hồ sơ cụ thể do Bộ phận một cửa
+              UBND xã hướng dẫn khi tiếp nhận.
+            </p>
+          </>
+        )}
+      </div>
     </Page>
   );
 };

@@ -3,8 +3,8 @@
 // có nội dung khởi điểm cho trang "Danh mục TTHC". Đây CHỈ LÀ MẪU — cán bộ xã
 // cần vào AdminWeb (mục "Thủ tục hành chính") kiểm tra, sửa thời gian xử lý/
 // giấy tờ/link nộp cho đúng thực tế xã Thăng Phú trước khi công bố chính thức.
-// An toàn để chạy lại nhiều lần: xoá hết rồi seed lại (không phải dữ liệu
-// công dân, không sợ mất dữ liệu thật khi re-run).
+// Chỉ nạp khi bảng đang trống (không đè dữ liệu cán bộ đã nhập). Trang trong
+// Mini App đã có dòng lưu ý "thông tin tham khảo" nên ghi chú để trống.
 const mongoose = require("mongoose");
 const config = require("../src/config");
 const ThuTucHanhChinh = require("../src/models/ThuTucHanhChinh");
@@ -97,7 +97,7 @@ async function main() {
     await ThuTucHanhChinh.insertMany(
       ITEMS.map((it) => ({
         ...it,
-        ghiChu: "Nội dung mẫu — cán bộ xã cần kiểm tra, cập nhật cho đúng thực tế trước khi công bố.",
+        ghiChu: "",
       }))
     );
     console.log(`Seeded ${ITEMS.length} thủ tục hành chính (mẫu).`);
