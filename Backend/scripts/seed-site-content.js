@@ -50,7 +50,7 @@ const SITE_INFO = {
     policeStation: { name: "Công an xã Thăng Phú", address: "Tổ 7, Thôn Bình Quang, xã Thăng Phú (trụ sở UBND xã Bình Quế cũ)", phone: "023 5366 9113" },
   },
   zaloOA: { name: "Zalo OA xã Thăng Phú", description: "Nhận thông báo, tin tức mới nhất từ chính quyền." },
-  digitalTransform: { title: "Chuyển đổi số xã Thăng Phú", tags: ["Chính quyền số", "Kinh tế số", "Xã hội số"] },
+  digitalTransform: { title: "Chuyển đổi số xã Thăng Phú", href: "https://thangphu.danang.gov.vn/tin-tuc-su-kien/cai-cach-hanh-chinh-chuyen-%C4%91oi-so", tags: ["Chính quyền số", "Kinh tế số", "Xã hội số"] },
 };
 
 module.exports = { VILLAGES, DAN_SO, DU_LICH, VAN_HOA, SITE_INFO };

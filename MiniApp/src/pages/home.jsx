@@ -106,7 +106,11 @@ const HomePage = () => {
 
       {(digitalTransform.title || digitalTransform.tags) && (
         <section className="tp-section tp-section--tight">
-          <div className="tp-banner tp-shine">
+          <div
+            className="tp-banner tp-shine tp-press"
+            role={digitalTransform.href ? "button" : undefined}
+            onClick={digitalTransform.href ? () => openExternal(digitalTransform.href) : undefined}
+          >
             <Icon3D name="cong-du-lieu" size={56} />
             <div className="tp-banner__body">
               <strong>{digitalTransform.title}</strong>

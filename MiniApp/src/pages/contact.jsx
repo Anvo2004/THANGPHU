@@ -57,8 +57,7 @@ const ContactPage = () => {
   const c = contact || {};
   const openStatus = getOpenStatus(c.workHours);
   // Mở bản đồ số Đà Nẵng theo tên xã.
-  const mapEmbedUrl = `https://bando.danang.gov.vn/?ward=${encodeURIComponent(SITE.wardName)}`;
-  const mapsHref = mapEmbedUrl;
+  const mapsHref = `https://bando.danang.gov.vn/?ward=${encodeURIComponent(SITE.wardName)}`;
 
   return (
     <Page className="page-contact tp-page">
@@ -178,28 +177,29 @@ const ContactPage = () => {
         </div>
       </section>
 
-      <div className="mapcard">
-        <div className="mapcard__img">
-          <iframe
-            className="mapcard__iframe"
-            src={mapEmbedUrl}
-            title="Bản đồ vị trí UBND xã Thăng Phú"
-            loading="lazy"
-          />
-        </div>
-        <div className="mapcard__row">
-          <Icon name="location_on" className="i20 pink" />
-          <span className="mapcard__address">{c.address}</span>
-          <a
-            className="pill-soft"
-            href={mapsHref}
-            onClick={(e) => {
-              e.preventDefault();
-              openExternal(mapsHref);
-            }}
-          >
-            Chỉ đường
-          </a>
+      <div style={{ padding: "14px 16px 110px" }}>
+        <div
+          style={{
+            borderRadius: 26,
+            padding: 20,
+            background: "linear-gradient(150deg,#0A3D6B,#1E7FC4)",
+            color: "#fff",
+          }}
+        >
+          <div style={{ fontSize: 13, fontWeight: 600, opacity: 0.9 }}>UBND xã {SITE.wardName} · TP Đà Nẵng</div>
+          <div style={{ marginTop: 6, fontSize: 15, fontWeight: 700, lineHeight: 1.35 }}>{c.address}</div>
+          <div style={{ marginTop: 16, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
+            <span style={{ fontSize: 13, fontWeight: 600, lineHeight: 1.35, flex: 1 }}>Xem vị trí trên Bản đồ số</span>
+            <button
+              type="button"
+              className="pill-soft"
+              style={{ border: 0, display: "inline-flex", alignItems: "center", gap: 6 }}
+              onClick={() => openExternal(mapsHref)}
+            >
+              <Icon name="location_on" className="i20 pink" />
+              Chỉ đường
+            </button>
+          </div>
         </div>
       </div>
     </Page>
