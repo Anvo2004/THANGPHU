@@ -158,7 +158,7 @@ const ContactPage = () => {
         <div className="tp-section__head">
           <h2 id="tp-hotro">Kênh hỗ trợ nhanh</h2>
         </div>
-        <div className="tp-cards tp-cards--three">
+        <div className="tp-cards">
           <div className="tp-card tp-card--static">
             <Icon3D name="thong-bao" size={48} />
             <h3 className="tp-card__title">Zalo OA</h3>
@@ -168,11 +168,6 @@ const ContactPage = () => {
             <Icon3D name="phan-anh" size={48} />
             <h3 className="tp-card__title">Gửi phản ánh</h3>
             <p className="tp-card__desc">Kèm ảnh, vị trí hiện tại</p>
-          </button>
-          <button type="button" className="tp-card tp-press" onClick={() => navigate("/tro-ly-so")}>
-            <Icon3D name="tro-ly-ai" size={48} />
-            <h3 className="tp-card__title">Hỏi đáp AI</h3>
-            <p className="tp-card__desc">Giải đáp thủ tục 24/7</p>
           </button>
         </div>
       </section>

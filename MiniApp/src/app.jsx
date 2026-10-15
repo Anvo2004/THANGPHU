@@ -5,7 +5,6 @@ import Layout from "./components/layout.jsx";
 import HomePage from "./pages/home.jsx";
 import NewsPage from "./pages/news.jsx";
 import ServicesPage from "./pages/services.jsx";
-import AssistantPage from "./pages/assistant.jsx";
 import IdeasPage from "./pages/ideas.jsx";
 import ContactPage from "./pages/contact.jsx";
 import ReportFormPage from "./pages/report-form.jsx";
@@ -51,7 +50,6 @@ const MyApp = () => {
             <Route path="/cong-dan" element={<CitizenPage />} />
             <Route path="/tich-diem" element={<TichDiemPage />} />
             <Route path="/dich-vu" element={<ServicesPage />} />
-            <Route path="/tro-ly-so" element={<AssistantPage />} />
             <Route path="/hien-ke" element={<IdeasPage />} />
             <Route path="/lien-he" element={<ContactPage />} />
             <Route path="/phan-anh" element={<ReportFormPage />} />

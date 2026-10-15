@@ -43,14 +43,6 @@ const SERVICES = [
 // Sao y nguyên SERVICE_PORTAL_LINKS (section=portal)
 const PORTAL_LINKS = [
   {
-    icon: "smart_toy",
-    color: "v",
-    label: "Trợ lý Công dân số",
-    description: "Hỏi đáp thủ tục hành chính bằng AI",
-    badge: "Đang hoàn thiện",
-    path: "/tro-ly-so",
-  },
-  {
     icon: "account_balance",
     color: "b",
     label: "Cổng DVCQG",
