@@ -64,8 +64,8 @@ function escapeHtml(s) {
 }
 
 // Khối nội dung trang chi tiết (newsScrapeService.parseNewsDetail) → body bài viết
-// Zalo, cùng định dạng HOATIEN đang tạo bài thật: đoạn văn thành <p>, ảnh giữ
-// nguyên URL gốc, văn bản PDF đã chuyển ảnh (prepareDetail) thành các khối ảnh
+// Zalo, cùng định dạng HOATIEN đang tạo bài thật: đoạn văn thành <p>, ảnh dùng
+// URL đã chuẩn hóa, văn bản PDF đã chuyển ảnh (prepareDetail) thành các khối ảnh
 // "Trang i/N". withImages=false: chỉ giữ chữ (bản dự phòng khi Zalo từ chối ảnh).
 function toArticleBody(detail, news, { withImages = true } = {}) {
   const body = [];
@@ -102,8 +102,8 @@ function toArticleBody(detail, news, { withImages = true } = {}) {
 }
 
 // Chuẩn bị nội dung trang chi tiết cho bài OA:
-// - ảnh quá nặng → bản thu nhỏ do Backend phục vụ (utils/imageHost.js), vì Zalo
-//   không xử lý nổi ảnh nặng và bài sẽ kẹt mãi;
+// - mọi ảnh → JPEG dưới 1 MB do Backend phục vụ (utils/imageHost.js), tránh
+//   nguồn trả sai định dạng hoặc ảnh quá nặng khiến Zalo từ chối;
 // - văn bản PDF → ảnh từng trang (utils/pdfPages.js), trong hạn mức
 //   MAX_BODY_IMAGES chung với ảnh của tin. Không chuyển được thì khối giữ
 //   nguyên (bài hiện link tài liệu).
@@ -218,7 +218,7 @@ async function buildArticle(news) {
   const item = toArticleItem(news);
   // Không có ảnh và chưa cấu hình cover mặc định → không đăng được (Zalo bắt buộc cover).
   if (!item.coverPhotoUrl) throw new Error("Thiếu ảnh cover");
-  item.coverPhotoUrl = await zaloFriendlyImage(item.coverPhotoUrl);
+  item.coverPhotoUrl = await zaloFriendlyImage(item.coverPhotoUrl, { required: true });
 
   // Nội dung đầy đủ lấy từ trang chi tiết — tải lỗi thì vẫn đăng bản tóm tắt như
   // trước, và KHÔNG ghi bodyVersion để lần gửi thẻ sau thử dựng lại.

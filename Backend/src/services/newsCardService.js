@@ -4,6 +4,7 @@ const NewsCardSend = require("../models/NewsCardSend");
 const SendLog = require("../models/SendLog");
 const { sendZaloCard } = require("../utils/zaloApi");
 const { getArticleDetail } = require("../utils/zaloArticle");
+const { zaloFriendlyImage } = require("../utils/imageHost");
 const { redisGet, redisSet } = require("../utils/redis");
 const { createJob, getJobStatus, fetchAllFollowers } = require("./broadcastService");
 const zaloNewsService = require("./zaloNewsService");
@@ -92,8 +93,9 @@ async function resolveTarget(news) {
 }
 
 async function buildCard(news) {
-  const imageUrl = cardImage(news);
-  if (!imageUrl) throw httpError(400, NO_IMAGE_MSG);
+  const sourceImage = cardImage(news);
+  if (!sourceImage) throw httpError(400, NO_IMAGE_MSG);
+  const imageUrl = await zaloFriendlyImage(sourceImage, { required: true });
   const target = await resolveTarget(news);
 
   return {
