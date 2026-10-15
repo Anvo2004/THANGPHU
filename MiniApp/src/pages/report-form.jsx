@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Page, Header, Box } from "zmp-ui";
 import { getUserInfo, chooseImage } from "zmp-sdk/apis";
 import API_BASE_URL from "../data/api-config.js";
+import { getRememberedPhone } from "../data/citizen.js";
 
 const PHONE_RE = /^(0|\+84)[3-9]\d{8}$/;
 const MAX_IMAGES = 5;
@@ -45,7 +46,7 @@ const ReportFormPage = () => {
   const [zaloUser, setZaloUser] = useState(null);
   const [categories, setCategories] = useState([]);
   const [categoryId, setCategoryId] = useState("");
-  const [contact, setContact] = useState("");
+  const [contact, setContact] = useState(() => getRememberedPhone());
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [address, setAddress] = useState("");

@@ -1999,3 +1999,35 @@ body {
     color: var(--tp-muted);
   }
 }
+
+/* Kỹ năng PCTT: lưới 2 cột, icon + chữ lớn để dễ nhìn/bấm */
+.quick-links.tp-skills {
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  padding: 14px;
+
+  .quick-links__item {
+    flex-direction: row;
+    justify-content: flex-start;
+    gap: 12px;
+    padding: 14px 12px;
+    border-radius: 18px;
+    background: #f4f7fc;
+    text-align: left;
+  }
+  .quick-links__icon {
+    flex: 0 0 auto;
+    font-size: 40px;
+    line-height: 1;
+  }
+  .quick-links__label {
+    width: auto;
+    height: auto;
+    flex: 1;
+    font-size: 15px;
+    font-weight: 700;
+    text-align: left;
+    color: #1d2a4a;
+    line-height: 1.3;
+  }
+}

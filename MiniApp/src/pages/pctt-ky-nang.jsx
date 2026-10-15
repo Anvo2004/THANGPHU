@@ -19,7 +19,7 @@ const PcttKyNangPage = () => {
       </div>
 
       <Box className="section">
-        <div className="quick-links">
+        <div className="quick-links tp-skills">
           {PCTT_SKILLS.map((skill) => (
             <button
               key={skill.id}

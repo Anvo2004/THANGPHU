@@ -7,6 +7,7 @@ import API_BASE_URL from "./api-config.js";
 const REF_KEY = "thangphu_ref_code";
 const PHONE_ASKED_KEY = "thangphu_phone_asked";
 const LINKED_KEY = "thangphu_citizen_linked";
+const PHONE_KEY = "thangphu_citizen_phone";
 
 function store(key, value) {
   try {
@@ -59,9 +60,19 @@ async function call(path, { method = "GET", body, auth = true } = {}) {
 }
 
 export const fetchProgram = () => call("/program", { auth: false });
-export const openCitizen = (profile) => call("/me", { method: "POST", body: profile });
+// SĐT đã liên kết thành công được nhớ lại để tự điền vào form phản ánh.
+export const getRememberedPhone = () => load(PHONE_KEY);
+function remember(data) {
+  const phone = data?.citizen?.phone;
+  if (phone) store(PHONE_KEY, String(phone));
+  return data;
+}
+
+export const openCitizen = (profile) =>
+  call("/me", { method: "POST", body: profile }).then(remember);
 export const updateProfile = (patch) => call("/me/profile", { method: "PUT", body: patch });
-export const sendPhoneToken = (token) => call("/me/phone", { method: "POST", body: { token } });
+export const sendPhoneToken = (token) =>
+  call("/me/phone", { method: "POST", body: { token } }).then(remember);
 export const submitReferral = (code) => call("/me/referral", { method: "POST", body: { code } });
 export const fetchTransactions = () => call("/me/transactions");
 

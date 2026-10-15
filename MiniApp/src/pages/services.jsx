@@ -93,14 +93,20 @@ const ServicesPage = () => {
         {services === null &&
           [0, 1, 2, 3].map((i) => <div key={i} className="tp-card tp-skeleton tp-card--ghost" />)}
         {filteredServices.map((service, index) => {
-          const Tag = service.path ? "button" : "div";
+          const clickable = Boolean(service.href || service.path);
+          const Tag = clickable ? "button" : "div";
+          const go = service.href
+            ? () => openExternal(service.href)
+            : service.path
+              ? () => navigate(service.path)
+              : undefined;
           return (
             <Tag
               key={service._id}
-              type={service.path ? "button" : undefined}
+              type={clickable ? "button" : undefined}
               className="tp-card tp-press tp-rise"
               style={{ animationDelay: `${Math.min(index, 12) * 40}ms` }}
-              onClick={service.path ? () => navigate(service.path) : undefined}
+              onClick={go}
             >
               <Icon3D item={service} size={56} />
               <h3 className="tp-card__title">{service.label}</h3>
