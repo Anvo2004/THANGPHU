@@ -69,7 +69,7 @@ app.get("/dieu-khoan-su-dung", (req, res) => res.send(`
 </head>
 <body>
   <h1>Điều khoản sử dụng &amp; Chính sách quyền riêng tư</h1>
-  <p class="updated">Ứng dụng "Thăng Phú Số" — Cập nhật lần cuối: 14/10/2026</p>
+  <p class="updated">Ứng dụng "Thăng Phú Số" — Cập nhật lần cuối: 15/10/2026</p>
 
   <h2>1. Đơn vị vận hành</h2>
   <p>Zalo Mini App "Thăng Phú Số" do <strong>UBND xã Thăng Phú, Thành phố Đà Nẵng</strong> vận
@@ -89,6 +89,8 @@ app.get("/dieu-khoan-su-dung", (req, res) => res.send(`
     <li>Hình ảnh đính kèm phản ánh (nếu có) — do bạn chủ động chụp hoặc chọn từ thư viện ảnh của
       thiết bị.</li>
     <li>Nội dung phản ánh, kiến nghị, mã hồ sơ bạn tự nhập để tra cứu.</li>
+    <li>Số điện thoại đã liên kết được lưu trên thiết bị của bạn để tự điền vào form phản ánh;
+      bạn có thể xoá bằng cách xoá dữ liệu của Mini App trong cài đặt Zalo.</li>
   </ul>
 
   <h2>3. Mục đích sử dụng</h2>
@@ -99,6 +101,8 @@ app.get("/dieu-khoan-su-dung", (req, res) => res.send(`
       người dân theo thể lệ công bố trong ứng dụng.</li>
     <li>Tra cứu tình trạng hồ sơ thủ tục hành chính dựa trên mã hồ sơ do người dùng cung
       cấp.</li>
+    <li>Cung cấp danh mục thủ tục hành chính (giấy tờ cần nộp, thời gian xử lý) để người dân
+      tham khảo trước khi thực hiện.</li>
   </ul>
 
   <p>Ứng dụng không thu thập danh bạ, tin nhắn, dữ liệu tài chính hay thông tin nào khác ngoài
@@ -111,7 +115,7 @@ app.get("/dieu-khoan-su-dung", (req, res) => res.send(`
 
   <h2>5. Liên kết đến trang bên ngoài</h2>
   <p>Một số tiện ích mở trang của cơ quan nhà nước khác ngay trong ứng dụng, như Cổng Dịch vụ
-  công quốc gia, Bản đồ số thành phố Đà Nẵng, Cổng dịch vụ dữ liệu thành phố, VNeID, trợ lý số
+  công quốc gia, Cổng thông tin điện tử xã Thăng Phú (thangphu.danang.gov.vn), Bản đồ số thành phố Đà Nẵng, Cổng dịch vụ dữ liệu thành phố, VNeID, trợ lý số
   DaNang AI của Tổng đài 1022. Ứng dụng không gửi dữ liệu cá nhân của bạn sang các trang này;
   thông tin bạn nhập trực tiếp trên các trang đó thuộc phạm vi điều khoản và chính sách riêng
   của đơn vị quản lý trang.</p>
