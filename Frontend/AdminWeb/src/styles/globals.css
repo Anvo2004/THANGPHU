@@ -56,7 +56,7 @@
   100% { background-position: 200% 0; }
 }
 
-.animate-fade-in   { animation: fadeIn 0.35s ease both; }
+.animate-fade-in   { animation: fadeIn 0.35s ease backwards; }
 .animate-slide-in  { animation: slideInLeft 0.3s ease both; }
 .animate-pulse-soft { animation: pulse-soft 2s ease-in-out infinite; }
 

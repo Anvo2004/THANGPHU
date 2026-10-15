@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { createPortal } from 'react-dom'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { Award, Search, Loader2, X, Plus, Trash2, Save } from 'lucide-react'
 import { api } from '@/lib/api'
@@ -57,7 +58,7 @@ function CitizenDetail({ zaloUserId, canEdit, onClose }) {
   })
 
   const c = data?.citizen
-  return (
+  return createPortal(
     <div className="fixed inset-0 z-50 flex justify-end bg-black/40" onClick={onClose}>
       <div
         className="h-full w-full max-w-md overflow-y-auto bg-background p-5 shadow-xl animate-fade-in"
@@ -133,7 +134,8 @@ function CitizenDetail({ zaloUserId, canEdit, onClose }) {
           </div>
         )}
       </div>
-    </div>
+    </div>,
+    document.body
   )
 }
 
