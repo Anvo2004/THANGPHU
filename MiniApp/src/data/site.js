@@ -3,7 +3,7 @@
 // MongoDB (xem components/stats-row.jsx, pages/home.jsx, pages/contact.jsx —
 // gọi /api/public/dan-so, /thong-bao, /site-info).
 const SITE = {
-  appName: "Thăng Phú Số",
+  appName: "Thăng Phú",
   shortName: "Thăng Phú kết nối số",
   province: "Thành phố Đà Nẵng", // xác nhận từ thangphu.danang.gov.vn
   badge: "Chính quyền số",
