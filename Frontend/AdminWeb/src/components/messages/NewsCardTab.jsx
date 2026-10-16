@@ -221,7 +221,7 @@ function AutoSendCard() {
         </p>
         <p className="text-xs text-slate-500">
           Có tin mới trên trang TTĐT xã thì hệ thống tự tạo bài viết OA đầy đủ và gửi thẻ tới tất cả người
-          quan tâm OA — mỗi tin 1 lần, trong khung 7h–20h
+          quan tâm OA — mỗi tin 1 lần, trong khung 7h–20h. Chỉ gửi tin mới đăng trong 24 giờ, không gửi bù tin cũ
           {enabled && data?.since && <> (áp dụng cho tin từ {formatDate(data.since)})</>}.
         </p>
       </div>

@@ -6,6 +6,7 @@ const vanBanService = require("./src/services/vanBanThangPhuService");
 const newsScrapeService = require("./src/services/newsScrapeService");
 const zaloNewsService = require("./src/services/zaloNewsService");
 const newsCardService = require("./src/services/newsCardService");
+const { getAutoConfig } = require("./src/services/newsAutoPolicy");
 const { startCgy1022Retry } = require("./src/services/cgy1022RetryService");
 const { startCgy1022StatusPolling } = require("./src/services/cgy1022StatusService");
 
@@ -14,6 +15,9 @@ async function main() {
   if (config.jwtSecret.length < 32) throw new Error("JWT_SECRET phải có ít nhất 32 ký tự riêng cho Thăng Phú");
   await mongoose.connect(config.mongoUri, { dbName: config.mongoDbName });
   console.log("[server] MongoDB connected");
+
+  // Chốt mốc bỏ tin cũ trước khi cào tin hoặc khởi chạy bộ gửi tự động.
+  await getAutoConfig();
 
   app.listen(config.port, () => {
     console.log(`[server] Listening on port ${config.port}`);

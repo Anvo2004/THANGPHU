@@ -5,7 +5,8 @@ const SendLog = require("../models/SendLog");
 const { sendZaloCard } = require("../utils/zaloApi");
 const { getArticleDetail } = require("../utils/zaloArticle");
 const { zaloFriendlyImage } = require("../utils/imageHost");
-const { redisGet, redisSet } = require("../utils/redis");
+const { getAutoConfig, setAutoConfig, freshNewsFilter, isFreshNews } = require("./newsAutoPolicy");
+const { ensureNewsMetadata } = require("./newsScrapeService");
 const { createJob, getJobStatus, fetchAllFollowers } = require("./broadcastService");
 const zaloNewsService = require("./zaloNewsService");
 const { ensureArticle, hasUsableArticle } = zaloNewsService;
@@ -39,15 +40,9 @@ const NEWS_PAGE_SIZE = 20;
 // Trạng thái job giữ 6 giờ — đủ cho bước chuẩn bị bài OA + gửi vài nghìn người (500ms/người).
 const JOB_TTL_MS = 6 * 60 * 60 * 1000;
 
-const AUTO_KEY = "thangphu_news_card_auto"; // Setting: { enabled, since }
 const AUTO_INTERVAL_MS = 10 * 60 * 1000; // quét tin mới mỗi 10 phút
 const AUTO_MAX_PER_RUN = 2; // mỗi lượt tối đa 2 tin — nhiều tin mới thì giãn ra các lượt sau
 const AUTO_MAX_ATTEMPTS = 5;
-// Hết lượt thử vẫn thử lại sau AUTO_RETRY_AFTER_MS: sự cố phía Zalo (vd. token OA
-// hỏng 2026-10-05 làm mọi lượt tạo bài thất bại) hết thì tin tự được gửi, không
-// phải bấm tay. Quá AUTO_HARD_MAX lượt mới thôi hẳn.
-const AUTO_RETRY_AFTER_MS = 12 * 60 * 60 * 1000;
-const AUTO_HARD_MAX = 15;
 const AUTO_HOURS = { from: 7, to: 20 }; // chỉ tự gửi 7h00–19h59 giờ Việt Nam
 
 const NO_IMAGE_MSG = "Tin này không có ảnh và chưa cấu hình ZALO_ARTICLE_DEFAULT_COVER — thẻ tin cần ảnh";
@@ -65,7 +60,7 @@ function truncate(str, max) {
 
 // Ảnh thẻ = ảnh bìa bài OA (zaloNewsService.toArticleItem) — cùng điều kiện.
 function cardImage(news) {
-  return news.imageUrl || config.zaloArticle.defaultCover || "";
+  return news.originalImageUrl || news.imageUrl || config.zaloArticle.defaultCover || "";
 }
 
 // Link mở khi bấm thẻ: bài viết OA (link_view). Tạo/dựng lại bài nếu cần; link_view
@@ -93,6 +88,7 @@ async function resolveTarget(news) {
 }
 
 async function buildCard(news) {
+  news = await ensureNewsMetadata(news);
   const sourceImage = cardImage(news);
   if (!sourceImage) throw httpError(400, NO_IMAGE_MSG);
   const imageUrl = await zaloFriendlyImage(sourceImage, { required: true });
@@ -129,7 +125,7 @@ async function listNews({ q = "", page = 1 } = {}) {
       .skip((current - 1) * NEWS_PAGE_SIZE)
       .limit(NEWS_PAGE_SIZE)
       .select(
-        "nid title summary date tag imageUrl link zalo.articleId zalo.fullContent zalo.bodyVersion zalo.bodyRetries zalo.lastReject zalo.lastError"
+        "nid title summary date tag imageUrl originalImageUrl link zalo.articleId zalo.fullContent zalo.bodyVersion zalo.bodyRetries zalo.lastReject zalo.lastError"
       )
       .lean(),
     News.countDocuments(filter),
@@ -151,7 +147,7 @@ async function listNews({ q = "", page = 1 } = {}) {
         summary: n.summary,
         date: n.date,
         tag: n.tag,
-        imageUrl: n.imageUrl,
+        imageUrl: cardImage(n),
         link: n.link,
         article: hasUsableArticle(n) ? "ready" : n.zalo?.articleId ? "rebuild" : "none",
         // Vì sao bài chưa đầy đủ / chưa tạo được — cán bộ xem ngay trên AdminWeb.
@@ -222,6 +218,7 @@ async function rebuildArticle(newsId) {
 // `finished`: promise xong lượt gửi (reject nếu lỗi) — bộ tự động chờ để gửi tuần tự từng tin.
 async function sendNewsCard({ newsId, sentBy = null, auto = false }) {
   const news = await loadNews(newsId);
+  if (auto) await assertAutoSendAllowed(news);
   if (!cardImage(news)) throw httpError(400, NO_IMAGE_MSG); // báo ngay, trước khi tạo job
   const key = String(news._id);
   if (activeSends.has(key)) throw httpError(409, "Tin này đang được gửi — chờ lượt gửi hiện tại xong");
@@ -258,6 +255,9 @@ async function deliver(news, job, { sentBy, auto }) {
   }
   const recipients = [...new Set(followers.map((f) => String(f.user_id || "")).filter(Boolean))];
   if (!recipients.length) throw httpError(400, "OA chưa có người quan tâm nào để gửi");
+
+  // Tạo bài/lấy follower có thể lâu; kiểm tra lại ngay trước khi gửi thực sự.
+  if (auto) await assertAutoSendAllowed(news);
 
   const doc = await NewsCardSend.create({
     newsId: news._id,
@@ -324,33 +324,6 @@ async function listHistory(limit = 50) {
 
 // ===== Tự động gửi thẻ cho tin mới =====
 
-// Chưa có cấu hình = BẬT sẵn (xã yêu cầu tự động), mốc `since` = lúc này để
-// không gửi dồn tin cũ — chỉ tin cào về SAU mốc này mới được tự gửi.
-async function getAutoConfig() {
-  const raw = await redisGet(AUTO_KEY);
-  if (raw) {
-    try {
-      return JSON.parse(raw);
-    } catch {
-      /* hỏng thì tạo lại bên dưới */
-    }
-  }
-  const cfg = { enabled: true, since: new Date().toISOString() };
-  await redisSet(AUTO_KEY, JSON.stringify(cfg));
-  return cfg;
-}
-
-// Bật lại sau khi đã tắt → mốc mới = lúc bật: tin xuất hiện trong lúc tắt không bị gửi bù.
-async function setAutoConfig(enabled) {
-  const current = await getAutoConfig();
-  const next = {
-    enabled: Boolean(enabled),
-    since: enabled && !current.enabled ? new Date().toISOString() : current.since,
-  };
-  await redisSet(AUTO_KEY, JSON.stringify(next));
-  return next;
-}
-
 function vnHour(date) {
   return Number(
     new Intl.DateTimeFormat("en-US", { timeZone: "Asia/Ho_Chi_Minh", hour: "numeric", hourCycle: "h23" }).format(date)
@@ -362,21 +335,24 @@ function inAutoHours(date = new Date()) {
   return h >= AUTO_HOURS.from && h < AUTO_HOURS.to;
 }
 
+async function assertAutoSendAllowed(news) {
+  const cfg = await getAutoConfig();
+  if (!cfg.enabled || !inAutoHours() || !isFreshNews(news, cfg)) {
+    throw httpError(409, "Bỏ qua tự động gửi: tin cũ, chưa rõ ngày đăng hoặc ngoài thời gian cho phép");
+  }
+}
+
 // Tin mới (tạo sau mốc bật), chưa từng gửi thẻ (kể cả gửi tay), không bị đánh dấu
 // bỏ qua (zalo.skip — như bộ đăng bài OA), chưa broadcast bài OA (tránh báo 2 lần
 // nếu sau này bật ZALO_BROADCAST_ENABLED), chưa quá số lần thử.
-async function findAutoCandidates(since) {
+async function findAutoCandidates(cfg) {
   const sentNewsIds = await NewsCardSend.distinct("newsId");
   return News.find({
     _id: { $nin: sentNewsIds },
-    createdAt: { $gte: since },
+    ...freshNewsFilter(cfg),
     "zalo.skip": { $ne: true },
     "zalo.broadcastedAt": null,
-    "zalo.cardAttempts": { $not: { $gte: AUTO_HARD_MAX } },
-    $or: [
-      { "zalo.cardAttempts": { $not: { $gte: AUTO_MAX_ATTEMPTS } } },
-      { "zalo.cardAttemptAt": { $lt: new Date(Date.now() - AUTO_RETRY_AFTER_MS) } },
-    ],
+    "zalo.cardAttempts": { $not: { $gte: AUTO_MAX_ATTEMPTS } },
   })
     .sort({ nid: 1 })
     .limit(20)
@@ -392,7 +368,7 @@ async function runAutoSend() {
     const cfg = await getAutoConfig();
     if (!cfg.enabled || !inAutoHours()) return;
 
-    const candidates = await findAutoCandidates(new Date(cfg.since));
+    const candidates = await findAutoCandidates(cfg);
     const ready = candidates.filter((n) => !activeSends.has(String(n._id))).slice(0, AUTO_MAX_PER_RUN);
 
     for (const news of ready) {

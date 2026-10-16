@@ -9,10 +9,12 @@ const newsSchema = new mongoose.Schema(
     title: { type: String, required: true },
     summary: { type: String, default: "" },
     date: { type: String, default: "" }, // dd/MM/yyyy (chuỗi, theo tóm tắt)
+    publishedAt: { type: Date, default: null }, // ngày đăng thật trên trang chi tiết (giờ VN)
     tag: { type: String, default: "Tin tức" },
     source: { type: String, default: "UBND xã Thăng Phú" },
     link: { type: String, default: "" },
-    imageUrl: { type: String, default: "" }, // URL Cloudinary sau khi re-host
+    imageUrl: { type: String, default: "" }, // ảnh danh sách, có thể chỉ là thumbnail
+    originalImageUrl: { type: String, default: "" }, // ảnh gốc lấy từ nội dung bài
     scrapedAt: { type: Date, default: Date.now },
 
     // Trạng thái đăng lên Zalo OA (Nội dung dạng Bài viết) — xem services/zaloNewsService.js

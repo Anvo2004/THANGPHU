@@ -4,7 +4,8 @@ const { createArticle, updateArticle, verifyArticle, getArticleDetail, broadcast
 const { renderPdfPages } = require("../utils/pdfPages");
 const { zaloFriendlyImage } = require("../utils/imageHost");
 const { redisGet, redisSet } = require("../utils/redis");
-const { fetchNewsDetail } = require("./newsScrapeService");
+const { fetchNewsDetail, ensureNewsMetadata } = require("./newsScrapeService");
+const { getAutoConfig, freshNewsFilter, isFreshNews } = require("./newsAutoPolicy");
 
 // ============================================================
 // Tự động đăng tin đã cào (model News) lên Zalo OA dạng "Bài viết", rồi
@@ -54,7 +55,7 @@ function toArticleItem(news) {
     title: news.title,
     author: news.source || "UBND xã Thăng Phú",
     description: summary,
-    coverPhotoUrl: news.imageUrl || config.zaloArticle.defaultCover || "",
+    coverPhotoUrl: news.originalImageUrl || news.imageUrl || config.zaloArticle.defaultCover || "",
     bodyText: `${summary}${news.link ? `\n\nNguồn: ${news.link}` : ""}`,
   };
 }
@@ -215,6 +216,7 @@ async function buildArticle(news) {
     }
   }
 
+  news = await ensureNewsMetadata(news);
   const item = toArticleItem(news);
   // Không có ảnh và chưa cấu hình cover mặc định → không đăng được (Zalo bắt buộc cover).
   if (!item.coverPhotoUrl) throw new Error("Thiếu ảnh cover");
@@ -361,7 +363,9 @@ async function ensureArticle(news, { force = false } = {}) {
 // Đăng các tin chưa có bài OA (chưa đăng, không bị skip, chưa quá số lần thử).
 async function postPendingArticles() {
   if (!config.zaloArticle.enabled) return;
+  const cfg = await getAutoConfig();
   const pending = await News.find({
+    ...freshNewsFilter(cfg),
     "zalo.articleId": "",
     "zalo.skip": { $ne: true },
     "zalo.attempts": { $lt: MAX_ATTEMPTS },
@@ -373,6 +377,7 @@ async function postPendingArticles() {
   if (pending.length === 0) return;
   console.log(`[ZaloArticle] ${pending.length} tin chờ đăng lên OA`);
   for (const news of pending) {
+    if (!isFreshNews(news, cfg)) continue;
     await postOne(news);
   }
 }
@@ -384,7 +389,11 @@ async function postPendingArticles() {
 async function broadcastPendingArticles() {
   if (!config.zaloArticle.broadcastEnabled) return;
 
+  const cfg = await getAutoConfig();
+  if (!cfg.enabled) return;
+
   const pending = await News.find({
+    ...freshNewsFilter(cfg),
     "zalo.articleId": { $ne: "" },
     "zalo.broadcastedAt": null,
     "zalo.skip": { $ne: true },

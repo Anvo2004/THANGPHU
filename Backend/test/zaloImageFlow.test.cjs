@@ -8,6 +8,7 @@ function stub(modulePath, exports) {
 }
 
 const source = "https://source.example.test/CMS14/pic/thumb/news.jpg";
+const original = "https://source.example.test/Portals/0/original.jpg";
 const hosted = "https://media.example.test/images/tin/anh/news-v2.jpg";
 const articleLink = "https://oa.zalo.me/example-article";
 let news;
@@ -32,10 +33,16 @@ stub("../src/utils/redis", {});
 stub("../src/utils/pdfPages", {});
 stub("../src/utils/zaloApi", {});
 stub("../src/services/broadcastService", {});
+const policy = require("../src/services/newsAutoPolicy");
+stub("../src/services/newsAutoPolicy", {
+  ...policy,
+  getAutoConfig: async () => ({ enabled: true, since: new Date(Date.now() - 60 * 60 * 1000).toISOString() }),
+});
 stub("../src/services/newsScrapeService", {
+  ensureNewsMetadata: async (item) => ({ ...item, originalImageUrl: original }),
   fetchNewsDetail: async () => [
     { type: "text", paragraphs: ["Nội dung đầy đủ"] },
-    { type: "image", url: source },
+    { type: "image", url: original },
   ],
 });
 stub("../src/utils/imageHost", {
@@ -53,7 +60,7 @@ stub("../src/utils/zaloArticle", {
 });
 
 const { ensureArticle } = require("../src/services/zaloNewsService");
-const { buildCard } = require("../src/services/newsCardService");
+const { buildCard, sendNewsCard } = require("../src/services/newsCardService");
 
 test("new OA article submits hosted cover and body images", async () => {
   const result = await ensureArticle(news);
@@ -62,7 +69,7 @@ test("new OA article submits hosted cover and body images", async () => {
   assert.equal(submissions.length, 1);
   assert.equal(submissions[0].item.coverPhotoUrl, hosted);
   assert.equal(submissions[0].item.body.find((block) => block.type === "image").url, hosted);
-  assert.deepEqual(imageCalls[0], { url: source, required: true });
+  assert.deepEqual(imageCalls[0], { url: original, required: true });
 });
 
 test("rebuilding an existing OA article also replaces its cover and keeps its id", async () => {
@@ -79,7 +86,7 @@ test("news card uses hosted image even if its OA article already exists", async 
   assert.equal(element.image_url, hosted);
   assert.equal(element.default_action.url, articleLink);
   assert.equal(submissions.length, 0);
-  assert.deepEqual(imageCalls, [{ url: source, required: true }]);
+  assert.deepEqual(imageCalls, [{ url: original, required: true }]);
 });
 
 test("failed image preparation stops article submission and card creation", async () => {
@@ -87,4 +94,32 @@ test("failed image preparation stops article submission and card creation", asyn
   await assert.rejects(ensureArticle(news), /Không chuẩn bị được ảnh/);
   await assert.rejects(buildCard(news), /Không chuẩn bị được ảnh/);
   assert.equal(submissions.length, 0);
+});
+
+test("automatic delivery rejects an old publication imported today before preparing or sending", async () => {
+  news.createdAt = new Date();
+  news.publishedAt = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+  await assert.rejects(sendNewsCard({ newsId: news._id, auto: true }), /Bỏ qua tự động gửi/);
+  assert.equal(imageCalls.length, 0);
+  assert.equal(submissions.length, 0);
+});
+
+test("both automatic OA posting and broadcast filter by publication and import time", async () => {
+  const config = require("../src/config");
+  config.zaloArticle.enabled = true;
+  config.zaloArticle.broadcastEnabled = true;
+  const queries = [];
+  require("../src/models/News").find = (query) => {
+    queries.push(query);
+    return { sort: () => ({ limit: () => ({ lean: async () => [] }) }) };
+  };
+  const service = require("../src/services/zaloNewsService");
+  await service.postPendingArticles();
+  await service.broadcastPendingArticles();
+  assert.equal(queries.length, 2);
+  for (const query of queries) {
+    assert.ok(query.publishedAt.$gte instanceof Date);
+    assert.ok(query.publishedAt.$lte instanceof Date);
+    assert.deepEqual(query.createdAt, query.publishedAt);
+  }
 });

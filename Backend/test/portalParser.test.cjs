@@ -1,7 +1,7 @@
 const test = require("node:test");
 const assert = require("node:assert/strict");
 const { parseNewsListing, parseDocumentListing } = require("../src/services/portalParser");
-const { parseNewsDetail } = require("../src/services/newsScrapeService");
+const { parseNewsDetail, parseNewsPage } = require("../src/services/newsScrapeService");
 const base = "https://thangphu.danang.gov.vn/";
 
 test("CMS14 cards retain content, normalize HTTPS and deduplicate", () => {
@@ -44,4 +44,23 @@ test("Detail keeps text/image/file order and excludes site chrome", () => {
   assert.equal(blocks[1].url, `${base}photo.jpg`);
   assert.equal(blocks[3].url, `${base}document.pdf`);
   assert.ok(!JSON.stringify(blocks).includes("Nội dung ngoài bài"));
+});
+
+test("detail metadata uses actual publication time in Vietnam and original body image", () => {
+  const page = parseNewsPage(`<img src="/CMS14/pic/thumb/tiny.jpg">
+    <p class="qti_ct_thongtin">Ngày đăng: <span>12:07 | 07/10/2026</span> Lượt xem: 93</p>
+    <h2 class="qti_gioithieu">Bài viết về sự kiện ngày 06/10/2026</h2>
+    <div class="qti_ct_noidung"><img src="/Portals/0/full.jpg"><p>Nội dung</p></div>`, base);
+  assert.equal(page.publishedAt.toISOString(), "2026-10-07T05:07:00.000Z");
+  assert.equal(page.date, "07/10/2026");
+  assert.equal(page.originalImageUrl, `${base}Portals/0/full.jpg`);
+});
+
+test("missing/invalid publication dates stay unknown instead of using scrape time", () => {
+  for (const stamp of ["", "12:07 | 31/02/2026", "25:00 | 07/10/2026"]) {
+    const page = parseNewsPage(`<p class="qti_ct_thongtin">${stamp}</p>
+      <div class="qti_ct_noidung"><p>Sự kiện ngày 07/10/2026</p></div>`, base);
+    assert.equal(page.publishedAt, null);
+    assert.equal(page.originalImageUrl, "");
+  }
 });
