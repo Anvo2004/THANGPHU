@@ -7,6 +7,7 @@ import API_BASE_URL from "../data/api-config.js";
 import { openExternal } from "../utils/open-external.js";
 import logo from "../static/logo-thangphu.png";
 import SITE from "../data/site.js";
+import { callPhone } from "../utils/call-phone.js";
 
 // Suy ra trạng thái "đang làm việc" từ chuỗi workHours dạng
 // "Thứ 2 - Thứ 6 · 07:30-11:30, 13:30-17:00". Trả về null nếu không tách
@@ -113,13 +114,21 @@ const ContactPage = () => {
         </div>
 
         {c.hotline && (
-          <a className="tp-callbtn tp-press" href={`tel:${c.hotline.replace(/\s+/g, "")}`}>
+          <a className="tp-callbtn tp-press" href={`tel:${c.hotline.replace(/\s+/g, "")}`}
+ onClick={(ev) => {
+ ev.preventDefault();
+ callPhone(c.hotline);
+ }}>
             <Icon name="call" className="i20" />
             Gọi ngay {c.hotline}
           </a>
         )}
         {c.hotline2 && (
-          <a className="tp-callbtn tp-callbtn--ghost tp-press" href={`tel:${c.hotline2.replace(/\s+/g, "")}`}>
+          <a className="tp-callbtn tp-callbtn--ghost tp-press" href={`tel:${c.hotline2.replace(/\s+/g, "")}`}
+ onClick={(ev) => {
+ ev.preventDefault();
+ callPhone(c.hotline2);
+ }}>
             <Icon name="call" className="i16" />
             Hoặc gọi số {c.hotline2}
           </a>
@@ -141,6 +150,10 @@ const ContactPage = () => {
             <a
               className="tp-hotline tp-press"
               href={`tel:${c.policeStation.phone.replace(/\s+/g, "")}`}
+ onClick={(ev) => {
+ ev.preventDefault();
+ callPhone(c.policeStation.phone);
+ }}
             >
               <span>
                 <small>Điện thoại trực ban</small>

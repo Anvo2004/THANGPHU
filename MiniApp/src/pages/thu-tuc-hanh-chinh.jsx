@@ -3,6 +3,7 @@ import { Page, Header } from "zmp-ui";
 import API_BASE_URL from "../data/api-config.js";
 import Icon3D from "../components/icon3d.jsx";
 import { openExternal } from "../utils/open-external.js";
+import { callPhone } from "../utils/call-phone.js";
 
 const MUC_DO_LABEL = { "3": "Mức độ 3", "4": "Mức độ 4 (trực tuyến toàn trình)" };
 
@@ -186,6 +187,10 @@ const ThuTucHanhChinhPage = () => {
                             <a
                               className="tp-tthc__btn tp-tthc__btn--ghost"
                               href={`tel:${hotline.replace(/\s+/g, "")}`}
+ onClick={(ev) => {
+ ev.preventDefault();
+ callPhone(hotline);
+ }}
                             >
                               Gọi Bộ phận một cửa
                             </a>

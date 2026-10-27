@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { Page, Header, Box } from "zmp-ui";
 import API_BASE_URL from "../data/api-config.js";
+import { callPhone } from "../utils/call-phone.js";
 
 function fmt(n) {
   if (n === null || n === undefined) return null;
@@ -102,7 +103,11 @@ const ThonXomPage = () => {
                     {t.dienThoai && (
                       <span>
                         <b>Điện thoại:</b>{" "}
-                        <a href={`tel:${t.dienThoai.replace(/\s+/g, "")}`}>{t.dienThoai}</a>
+                        <a href={`tel:${t.dienThoai.replace(/\s+/g, "")}`}
+ onClick={(ev) => {
+ ev.preventDefault();
+ callPhone(t.dienThoai);
+ }}>{t.dienThoai}</a>
                       </span>
                     )}
                     <span>
